@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"errors"
-	"villa_go/entities"
+	"villa_go/entities/models"
 	"villa_go/payloads/request"
 	UserResponse "villa_go/payloads/response/user_response"
 
@@ -19,7 +19,7 @@ func NewCredentialRepository(db *gorm.DB) CredentialRepository {
 	}
 }
 
-func (account *CredentialRepositoryImplement) RegisterUserCredential(User entities.Users) (*UserResponse.RegisterResponse, error) {
+func (account *CredentialRepositoryImplement) RegisterUserCredential(User models.Users) (*UserResponse.RegisterResponse, error) {
 
 	RegisterResponse := &UserResponse.RegisterResponse{}
 
@@ -32,13 +32,13 @@ func (account *CredentialRepositoryImplement) RegisterUserCredential(User entiti
 	return RegisterResponse, nil
 }
 
-func (account *CredentialRepositoryImplement) GetRoleUserForRegister(role string) (entities.Roles, error) {
-	var Roles entities.Roles
+func (account *CredentialRepositoryImplement) GetRoleUserForRegister(role string) (models.Roles, error) {
+	var Roles models.Roles
 
 	RolesException := account.Db.Where("role = ?", role).First(&Roles)
 
 	if RolesException.Error != nil {
-		return entities.Roles{}, errors.New("Roles not found")
+		return models.Roles{}, errors.New("Roles not found")
 	}
 
 	return Roles, nil

@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"villa_go/entities/domain"
+
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
@@ -9,9 +11,9 @@ import (
 func ApiRoutes(db *gorm.DB) {
 	e := echo.New()
 
-	Users := e.Group("/user")
+	users := e.Group("/user")
 
-	RoutesCredentials(db, Users)
+	domain.RoutesCredentials(db, users)
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
 }

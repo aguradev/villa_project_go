@@ -1,4 +1,4 @@
-package routes
+package domain
 
 import (
 	"villa_go/controllers"

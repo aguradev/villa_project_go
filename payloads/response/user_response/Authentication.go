@@ -1,6 +1,6 @@
 package userresponse
 
-import "villa_go/entities"
+import "villa_go/entities/models"
 
 type AuthJWTResponse struct {
 	Username string           `json:"username"`
@@ -16,7 +16,7 @@ type RegisterResponse struct {
 	Address    string `json:"address omiempty"`
 }
 
-func (user *RegisterResponse) GetRegisterResponse(User entities.Users) {
+func (user *RegisterResponse) GetRegisterResponse(User models.Users) {
 	user.Username = User.Credential.Username
 	user.First_name = User.First_name
 	user.Last_name = User.Last_name

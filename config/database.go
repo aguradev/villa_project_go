@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"villa_go/entities"
+	"villa_go/entities/models"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
@@ -28,5 +28,5 @@ func Database() *gorm.DB {
 }
 
 func Migration(db *gorm.DB) {
-	db.AutoMigrate(entities.Users{}, entities.Admin{}, entities.Credentials{}, entities.Roles{})
+	db.AutoMigrate(models.Users{}, models.Admin{}, models.Credentials{}, models.Roles{})
 }
