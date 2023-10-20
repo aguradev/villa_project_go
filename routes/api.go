@@ -13,7 +13,7 @@ func ApiRoutes(db *gorm.DB) {
 
 	users := e.Group("/user")
 
-	domain.RoutesCredentials(db, users)
+	domain.BindingDependencyCredentials(db, users)
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
 }

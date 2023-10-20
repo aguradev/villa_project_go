@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RoutesCredentials(db *gorm.DB, route *echo.Group) {
+func BindingDependencyCredentials(db *gorm.DB, route *echo.Group) {
 
 	CredentialRepository := repositories.NewCredentialRepository(db)
 	CredentialService := services.CreateCredentialServiceImplement(CredentialRepository)
