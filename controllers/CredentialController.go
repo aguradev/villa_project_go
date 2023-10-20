@@ -9,15 +9,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type CredentialController interface {
+	RegisterUser(echo.Context) error
+	AuthenticationUser(echo.Context) error
+}
+
 type CredentialControllerImpl struct {
 	CredentialService CredentialService.CredentialService
 }
 
-func CreateCredentialRoutes(Credential CredentialService.CredentialService, group *echo.Group) {
-	CredentialHandler := CredentialControllerImpl{Credential}
-
-	group.POST("/register", CredentialHandler.RegisterUser)
-	group.POST("/auth", CredentialHandler.AuthenticationUser)
+func CreateCredentialRoutes(Credential CredentialService.CredentialService) CredentialController {
+	return &CredentialControllerImpl{Credential}
 }
 
 func (Crendetial *CredentialControllerImpl) RegisterUser(ctx echo.Context) error {
