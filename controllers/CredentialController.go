@@ -41,8 +41,8 @@ func (Credential *CredentialControllerImpl) AuthenticationUser(ctx echo.Context)
 
 	var Request request.CredentialRequest
 
-	if RequestException := ctx.Bind(&Request); RequestException.Error != nil {
-		return echo.NewHTTPError(http.StatusBadGateway, RequestException.Error)
+	if RequestException := ctx.Bind(&Request); RequestException != nil {
+		return echo.NewHTTPError(http.StatusBadGateway, RequestException)
 	}
 
 	return nil
