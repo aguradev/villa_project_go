@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/labstack/echo"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
 
@@ -12,5 +13,5 @@ func ApiRoutes(db *gorm.DB) {
 
 	RoutesCredentials(db, Users)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
 }

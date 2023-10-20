@@ -1,8 +1,8 @@
 appName: REST API Villa
+env: "development"
 server:
-  port: 8080
+  port: ":8080"
 db:
-  env: "development"
   DB_HOST: "127.0.0.1"
   DB_USER:  "AGURA_24"
   DB_PASS:  ""
