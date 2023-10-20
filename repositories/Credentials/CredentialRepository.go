@@ -1,13 +1,13 @@
 package repositories
 
 import (
-	"villa_go/entities"
+	"villa_go/entities/models"
 	"villa_go/payloads/request"
 	UserResponse "villa_go/payloads/response/user_response"
 )
 
 type CredentialRepository interface {
-	GetRoleUserForRegister(role string) (entities.Roles, error)
+	GetRoleUserForRegister(role string) (models.Roles, error)
 	CheckAuthCredential(request.CredentialRequest) (bool, error)
-	RegisterUserCredential(entities.Users) (*UserResponse.RegisterResponse, error)
+	RegisterUserCredential(models.Users) (*UserResponse.RegisterResponse, error)
 }

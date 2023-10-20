@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/google/uuid v1.3.1
+	github.com/labstack/echo/v4 v4.11.2
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.17.0
 	golang.org/x/crypto v0.14.0
@@ -19,7 +20,6 @@ require (
 	github.com/jackc/pgx/v5 v5.4.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/labstack/echo/v4 v4.11.2 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

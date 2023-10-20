@@ -2,7 +2,7 @@ package services
 
 import (
 	"errors"
-	"villa_go/entities"
+	"villa_go/entities/models"
 	"villa_go/payloads/request"
 	UserResponse "villa_go/payloads/response/user_response"
 	CredentialRepo "villa_go/repositories/Credentials"
@@ -23,7 +23,7 @@ func CreateCredentialServiceImplement(Credential CredentialRepo.CredentialReposi
 
 func (Credential *CredentialServiceImpl) RegisterCredential(register request.RegisterRequest) (*UserResponse.RegisterResponse, error) {
 
-	User := &entities.Users{}
+	User := &models.Users{}
 
 	CredentialRequest := request.CredentialRequest{
 		Username: register.Username,
