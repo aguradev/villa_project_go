@@ -6,7 +6,7 @@ import (
 	"villa_go/payloads/response"
 	CredentialService "villa_go/services/Credentials"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type CredentialControllerImpl struct {
@@ -28,7 +28,7 @@ func (Crendetial *CredentialControllerImpl) RegisterUser(ctx echo.Context) error
 		return echo.NewHTTPError(http.StatusBadRequest, CredentialbindingException.Error())
 	}
 
-	RegisterUser, Err := Crendetial.CredentialService.RegisterCredential(ctx, CredentialRequest)
+	RegisterUser, Err := Crendetial.CredentialService.RegisterCredential(CredentialRequest)
 
 	if Err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Register Failed")

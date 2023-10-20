@@ -9,7 +9,6 @@ import (
 	"villa_go/utils"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo"
 )
 
 type CredentialServiceImpl struct {
@@ -22,7 +21,7 @@ func CreateCredentialServiceImplement(Credential CredentialRepo.CredentialReposi
 	}
 }
 
-func (Credential *CredentialServiceImpl) RegisterCredential(ctx echo.Context, register request.RegisterRequest) (*UserResponse.RegisterResponse, error) {
+func (Credential *CredentialServiceImpl) RegisterCredential(register request.RegisterRequest) (*UserResponse.RegisterResponse, error) {
 
 	User := &entities.Users{}
 

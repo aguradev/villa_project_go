@@ -5,7 +5,7 @@ import (
 	repositories "villa_go/repositories/Credentials"
 	services "villa_go/services/Credentials"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
