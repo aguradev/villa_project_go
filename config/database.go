@@ -2,9 +2,9 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"villa_go/entities"
 
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,10 +12,10 @@ import (
 func Database() *gorm.DB {
 
 	dsn := fmt.Sprintf("host=%v user=%v dbname=%v port=%v sslmode=disable",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PORT"),
+		viper.GetString("db.DB_HOST"),
+		viper.GetString("db.DB_USER"),
+		viper.GetString("db.DB_NAME"),
+		viper.GetString("db.DB_PORT"),
 	)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})

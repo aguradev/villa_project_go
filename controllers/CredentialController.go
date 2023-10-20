@@ -45,4 +45,5 @@ func (Credential *CredentialControllerImpl) AuthenticationUser(ctx echo.Context)
 		return echo.NewHTTPError(http.StatusBadGateway, RequestException.Error)
 	}
 
+	return nil
 }

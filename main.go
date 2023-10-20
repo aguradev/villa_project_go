@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-
 	config.InitEnv()
+
 	db := config.Database()
 
 	config.Migration(db)
