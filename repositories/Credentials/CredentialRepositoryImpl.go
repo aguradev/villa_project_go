@@ -4,7 +4,7 @@ import (
 	"errors"
 	"villa_go/entities"
 	"villa_go/payloads/request"
-	UserResponse "villa_go/payloads/response/UserResponse"
+	UserResponse "villa_go/payloads/response/user_response"
 
 	"gorm.io/gorm"
 )

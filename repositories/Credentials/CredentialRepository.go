@@ -3,7 +3,7 @@ package repositories
 import (
 	"villa_go/entities"
 	"villa_go/payloads/request"
-	UserResponse "villa_go/payloads/response/UserResponse"
+	UserResponse "villa_go/payloads/response/user_response"
 )
 
 type CredentialRepository interface {

@@ -2,7 +2,7 @@ package services
 
 import (
 	"villa_go/payloads/request"
-	UserResponse "villa_go/payloads/response/UserResponse"
+	UserResponse "villa_go/payloads/response/user_response"
 )
 
 type CredentialService interface {
