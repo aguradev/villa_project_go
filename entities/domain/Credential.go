@@ -12,7 +12,6 @@ import (
 )
 
 func BindingDependencyCredentials(db *gorm.DB, route *echo.Group, validate *validator.Validate, trans ut.Translator) {
-
 	CredentialRepository := repositories.NewCredentialRepository(db)
 	CredentialService := services.CreateCredentialServiceImplement(CredentialRepository, validate, trans)
 	CredentialController := controllers.CreateCredentialRoutes(CredentialService)
