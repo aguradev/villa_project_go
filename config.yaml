@@ -1,5 +1,6 @@
 appName: REST API Villa
 env: "development"
+SECRET_KEY: "5|[.oClz;cx/{`SEvV=vJpgV5Qf`gfJY"
 server:
   port: ":8080"
 db:

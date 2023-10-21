@@ -8,6 +8,6 @@ import (
 
 type CredentialRepository interface {
 	GetRoleUserForRegister(role string) (models.Roles, error)
-	CheckAuthCredential(request.CredentialRequest) (bool, error)
+	CheckAuthCredential(request.AuthRequest) (*models.Users, bool, error)
 	RegisterUserCredential(models.Users) (*UserResponse.RegisterResponse, error)
 }

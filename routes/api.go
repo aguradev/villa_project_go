@@ -1,8 +1,10 @@
 package routes
 
 import (
+	"villa_go/config"
 	"villa_go/entities/domain"
 
+	"github.com/go-playground/validator/v10/translations/en"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
@@ -10,10 +12,12 @@ import (
 
 func ApiRoutes(db *gorm.DB) {
 	e := echo.New()
+	validate, trans := config.InitValidation()
+	en.RegisterDefaultTranslations(validate, trans)
 
 	users := e.Group("/user")
 
-	domain.BindingDependencyCredentials(db, users)
+	domain.BindingDependencyCredentials(db, users, validate, trans)
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
 }

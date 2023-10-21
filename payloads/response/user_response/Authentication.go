@@ -1,19 +1,30 @@
 package userresponse
 
-import "villa_go/entities/models"
+import (
+	"villa_go/entities/models"
 
-type AuthJWTResponse struct {
-	Username string           `json:"username"`
-	Token    string           `json:"token"`
-	Profile  RegisterResponse `json:"profile"`
+	"github.com/golang-jwt/jwt/v5"
+	uuid "github.com/satori/go.uuid"
+)
+
+type AuthToken struct {
+	Fullname string `json:"full_name"`
+	Email    string `json:"email"`
+	Token    string `json:"token"`
+}
+type JWTProfile struct {
+	Id       uuid.UUID `json:"id"`
+	Username string    `json:"username"`
+	Roles    string    `json:"role"`
+	jwt.RegisteredClaims
 }
 
 type RegisterResponse struct {
-	Username   string `json:"username omiempty"`
-	First_name string `json:"first_name omiempty"`
-	Last_name  string `json:"last_name omiempty"`
-	Email      string `json:"email omiempty"`
-	Address    string `json:"address omiempty"`
+	Username   string `json:"username,omitempty"`
+	First_name string `json:"first_name,omitempty"`
+	Last_name  string `json:"last_name,omitempty"`
+	Email      string `json:"email,omitempty"`
+	Address    string `json:"address,omitempty"`
 }
 
 func (user *RegisterResponse) GetRegisterResponse(User models.Users) {

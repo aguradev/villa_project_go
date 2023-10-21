@@ -3,26 +3,33 @@ package services
 import (
 	"errors"
 	"villa_go/entities/models"
+	"villa_go/exceptions"
 	"villa_go/payloads/request"
 	UserResponse "villa_go/payloads/response/user_response"
 	CredentialRepo "villa_go/repositories/Credentials"
 	"villa_go/utils"
 
+	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/labstack/echo/v4"
 )
 
 type CredentialServiceImpl struct {
 	CredentialRepository CredentialRepo.CredentialRepository
+	Validator            *validator.Validate
+	TranslatorValidation ut.Translator
 }
 
-func CreateCredentialServiceImplement(Credential CredentialRepo.CredentialRepository) CredentialService {
+func CreateCredentialServiceImplement(Credential CredentialRepo.CredentialRepository, validate *validator.Validate, trans ut.Translator) CredentialService {
 	return &CredentialServiceImpl{
 		CredentialRepository: Credential,
+		Validator:            validate,
+		TranslatorValidation: trans,
 	}
 }
 
 func (Credential *CredentialServiceImpl) RegisterCredential(register request.RegisterRequest) (*UserResponse.RegisterResponse, error) {
-
 	User := &models.Users{}
 
 	CredentialRequest := request.CredentialRequest{
@@ -61,4 +68,27 @@ func (Credential *CredentialServiceImpl) RegisterCredential(register request.Reg
 
 	return UserRegister, nil
 
+}
+
+func (Credential *CredentialServiceImpl) AuthUser(ctx echo.Context, request request.AuthRequest) (*UserResponse.AuthToken, []exceptions.ValidationMessage, error) {
+
+	ValidationException := Credential.Validator.Struct(request)
+
+	if ValidationException != nil {
+		return nil, utils.ValidationError(ctx, Credential.TranslatorValidation, ValidationException), nil
+	}
+
+	findUser, isExist, _ := Credential.CredentialRepository.CheckAuthCredential(request)
+
+	if !isExist {
+		return nil, nil, errors.New("Authentication Failed Incorrect Credential")
+	}
+
+	GenerateToken, errGenerate := utils.GenerateToken(*findUser)
+
+	if errGenerate != nil {
+		return nil, nil, errors.New("Failed Generate Token")
+	}
+
+	return GenerateToken, nil, nil
 }

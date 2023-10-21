@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"villa_go/exceptions"
 	"villa_go/payloads/request"
 	"villa_go/payloads/response"
 	CredentialService "villa_go/services/Credentials"
@@ -41,11 +42,21 @@ func (Crendetial *CredentialControllerImpl) RegisterUser(ctx echo.Context) error
 
 func (Credential *CredentialControllerImpl) AuthenticationUser(ctx echo.Context) error {
 
-	var Request request.CredentialRequest
+	var Request request.AuthRequest
 
 	if RequestException := ctx.Bind(&Request); RequestException != nil {
 		return echo.NewHTTPError(http.StatusBadGateway, RequestException)
 	}
 
-	return nil
+	GetAuthResponse, ValidationException, errException := Credential.CredentialService.AuthUser(ctx, Request)
+
+	if ValidationException != nil {
+		return exceptions.ValidationException(ctx, "One or more validation errors occurred", ValidationException)
+	}
+
+	if errException != nil {
+		return exceptions.AuthorizationException(ctx, errException.Error())
+	}
+
+	return response.HandleSuccess(ctx, GetAuthResponse, "User Authentication Success", http.StatusOK)
 }
