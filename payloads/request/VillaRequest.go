@@ -1,16 +1,15 @@
 package request
 
 import (
-	"time"
-
 	"github.com/shopspring/decimal"
 )
 
 type VillaRequest struct {
-	Name            string          `json:"name"`
-	Slug            string          `json:"slug"`
-	Description     string          `json:"description"`
-	Price_per_night decimal.Decimal `json:"price_per_night"`
-	Check_in        time.Time       `json:"check_in"`
-	Check_out       time.Time       `json:"check_out"`
+	Name            string          `json:"name" validate:"required"`
+	Slug            string          `json:"slug" validate:"required"`
+	Description     string          `json:"description" validate:"required"`
+	Price_per_night decimal.Decimal `json:"price_per_night" validate:"required"`
+	Check_in        string          `json:"check_in" validate:"required"`
+	Check_out       string          `json:"check_out" validate:"required"`
+	Status          string          `json:"status"`
 }

@@ -40,7 +40,7 @@ func AccessbilityRole(role string) echo.MiddlewareFunc {
 				break
 			}
 
-			return exceptions.AuthorizationException(c, "Role has not have accessbility")
+			return exceptions.AuthorizationException(c, "You do not have permission to access this resource")
 		}
 	}
 

@@ -9,7 +9,6 @@ type AuthRequest struct {
 
 type CredentialRequest struct {
 	Username string `json:"username"`
-
 	Password string `json:"password"`
 	Roles_id uuid.UUID
 }
