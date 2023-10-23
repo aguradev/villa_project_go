@@ -5,7 +5,7 @@ import (
 	"villa_go/entities/models"
 	UserResponse "villa_go/payloads/response/user_response"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/viper"
 )
 

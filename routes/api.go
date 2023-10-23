@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"net/http"
 	"villa_go/config"
 	"villa_go/entities/domain"
 	"villa_go/middlewares"
@@ -16,10 +17,20 @@ func ApiRoutes(db *gorm.DB) {
 	validate, trans := config.InitValidation()
 	en.RegisterDefaultTranslations(validate, trans)
 
-	e.Use(middlewares.LoggerAccess())
-	users := e.Group("/user")
+	api := e.Group("api", middlewares.LoggerAccess())
 
-	domain.BindingDependencyCredentials(db, users, validate, trans)
+	users := api.Group("/user", middlewares.VerifyToken(), middlewares.AccessbilityRole("User"))
+	admin := api.Group("/admin")
+
+	domain.BindingDependencyCredentials(db, api, validate, trans)
+
+	users.GET("/greeting", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello User")
+	})
+
+	admin.GET("/greeting", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello Admin")
+	})
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
 }

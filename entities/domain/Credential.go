@@ -15,7 +15,6 @@ func BindingDependencyCredentials(db *gorm.DB, route *echo.Group, validate *vali
 	CredentialRepository := repositories.NewCredentialRepository(db)
 	CredentialService := services.CreateCredentialServiceImplement(CredentialRepository, validate, trans)
 	CredentialController := controllers.CreateCredentialRoutes(CredentialService)
-
 	route.POST("/register", CredentialController.RegisterUser)
 	route.POST("/auth", CredentialController.AuthenticationUser)
 }

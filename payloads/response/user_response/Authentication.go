@@ -3,7 +3,7 @@ package userresponse
 import (
 	"villa_go/entities/models"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v4"
 	uuid "github.com/satori/go.uuid"
 )
 
