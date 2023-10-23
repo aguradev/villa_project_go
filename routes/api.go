@@ -17,19 +17,14 @@ func ApiRoutes(db *gorm.DB) {
 	validate, trans := config.InitValidation()
 	en.RegisterDefaultTranslations(validate, trans)
 
-	api := e.Group("api", middlewares.LoggerAccess())
+	api := e.Group("/api", middlewares.LoggerAccess())
 
-	users := api.Group("/user", middlewares.VerifyToken(), middlewares.AccessbilityRole("User"))
-	admin := api.Group("/admin")
+	users := api.Group("/user", middlewares.LoginSignedIn(), middlewares.AccessbilityRole("User"))
 
 	domain.BindingDependencyCredentials(db, api, validate, trans)
 
 	users.GET("/greeting", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello User")
-	})
-
-	admin.GET("/greeting", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello Admin")
 	})
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))

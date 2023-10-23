@@ -1,18 +1,16 @@
 package middlewares
 
 import (
-	"fmt"
 	"villa_go/exceptions"
-	userresponse "villa_go/payloads/response/user_response"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
 type Roles string
 
 const (
-	admin Roles = "Admin"
+	Admin Roles = "Admin"
 	User  Roles = "User"
 )
 
@@ -21,15 +19,28 @@ func AccessbilityRole(role string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			Payloaduser := c.Get("user").(*jwt.Token)
-			Claims, ok := Payloaduser.Claims.(userresponse.JWTProfile)
+			Claims, ok := Payloaduser.Claims.(jwt.MapClaims)
 
 			if !ok {
 				return exceptions.AuthorizationException(c, "Token Invalid")
 			}
 
-			fmt.Println(Claims)
+			Roles := Claims["role"].(string)
 
-			return nil
+			switch role {
+			case "Admin":
+				if Roles == string(Admin) {
+					return next(c)
+				}
+			case "User":
+				if Roles == string(User) {
+					return next(c)
+				}
+			default:
+				break
+			}
+
+			return exceptions.AuthorizationException(c, "Role has not have accessbility")
 		}
 	}
 

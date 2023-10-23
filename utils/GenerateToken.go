@@ -6,23 +6,21 @@ import (
 	UserResponse "villa_go/payloads/response/user_response"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 )
 
-func GenerateToken(User models.Users) (*UserResponse.AuthToken, error) {
+func GenerateToken(User models.Users, ctx echo.Context) (*UserResponse.AuthToken, error) {
 
 	var Auth UserResponse.AuthToken
+	var Payload UserResponse.JWTProfile
 
-	claims := &UserResponse.JWTProfile{
-		User.Credential_id,
-		User.Credential.Username,
-		User.Credential.Roles.Role,
-		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 300)),
-		},
-	}
+	Payload.Id = User.Credential_id
+	Payload.Username = User.Credential.Username
+	Payload.Roles = User.Credential.Roles.Role
+	Payload.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * 300))
 
-	GetToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	GetToken := jwt.NewWithClaims(jwt.SigningMethodHS256, Payload)
 
 	result, errException := GetToken.SignedString([]byte(viper.GetString("SECRET_KEY")))
 

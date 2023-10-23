@@ -1,18 +1,21 @@
 package middlewares
 
 import (
-	"villa_go/exceptions"
+	"net/http"
 
-	echojwt "github.com/labstack/echo-jwt"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
 )
 
-func VerifyToken() echo.MiddlewareFunc {
-	return echojwt.WithConfig(echojwt.Config{
+func LoginSignedIn() echo.MiddlewareFunc {
+	return middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey: []byte(viper.GetString("SECRET_KEY")),
-		ErrorHandler: func(c echo.Context, err error) error {
-			return exceptions.AuthorizationException(c, "Token invalid or expried")
+		ErrorHandler: func(err error) error {
+			return echo.NewHTTPError(http.StatusUnauthorized, map[string]interface{}{
+				"status":  http.StatusUnauthorized,
+				"message": "missing or malformed jwt",
+			})
 		},
 	})
 }

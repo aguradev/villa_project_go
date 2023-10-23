@@ -84,7 +84,7 @@ func (Credential *CredentialServiceImpl) AuthUser(ctx echo.Context, request requ
 		return nil, nil, errors.New("Authentication Failed Incorrect Credential")
 	}
 
-	GenerateToken, errGenerate := utils.GenerateToken(*findUser)
+	GenerateToken, errGenerate := utils.GenerateToken(*findUser, ctx)
 
 	if errGenerate != nil {
 		return nil, nil, errors.New("Failed Generate Token")
