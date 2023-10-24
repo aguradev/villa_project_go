@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"villa_go/entities"
+	"villa_go/entities/models"
 
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
@@ -17,12 +17,12 @@ func CreateNewUserRepositoryImplment(db *gorm.DB) UserRepository {
 	}
 }
 
-func (User *UserRepositoryImplement) GetAllUsers() ([]entities.Users, error) {
+func (User *UserRepositoryImplement) GetAllUsers() ([]models.Users, error) {
 	return nil, nil
 }
 
-func (User *UserRepositoryImplement) GetUserById(id uuid.UUID) (entities.Users, error) {
-	return entities.Users{}, nil
+func (User *UserRepositoryImplement) GetUserById(id uuid.UUID) (models.Users, error) {
+	return models.Users{}, nil
 }
 
 func (User *UserRepositoryImplement) CreateUser() (bool, error) {
