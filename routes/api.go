@@ -18,10 +18,11 @@ func ApiRoutes(db *gorm.DB) {
 
 	api := e.Group("/api", middlewares.LoggerAccess())
 
-	accessbility := api.Group("", middlewares.LoginSignedIn())
+	verifyJWT := api.Group("", middlewares.LoginSignedIn())
 
 	domain.BindingDependencyCredentials(db, api, validate, trans)
-	domain.BindingDepedencyVilla(db, accessbility, validate, trans)
+	domain.BindingDepedencyVilla(db, verifyJWT, validate, trans)
+	domain.BindingDepedencyVillaLocation(db, verifyJWT, validate, trans)
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
 }

@@ -10,6 +10,8 @@ import (
 
 type Villa struct {
 	Id              uuid.UUID       `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
+	Location_id     *uuid.UUID      `gorm:"type:uuid;"`
+	Location        *VillaLocation  `gorm:"foreignKey:Location_id;references:Id;"`
 	Name            string          `gorm:"type:varchar(50)"`
 	Slug            string          `gorm:"type:varchar(50)"`
 	Description     string          `gorm:"type:text"`
@@ -17,6 +19,7 @@ type Villa struct {
 	Price_per_night decimal.Decimal `gorm:"type:decimal(10,2)"`
 	Check_in        time.Time       `gorm:"type:time"`
 	Check_out       time.Time       `gorm:"type:time"`
+	Address         string          `gorm:"type:text"`
 	Status          string          `gorm:"type:varchar(50)"`
 	CreatedAt       time.Time       `gorm:"autoCreateTime"`
 	UpdatedAt       time.Time       `gorm:"autoUpdateTime:milli"`

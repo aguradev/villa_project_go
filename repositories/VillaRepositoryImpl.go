@@ -12,7 +12,7 @@ import (
 
 type VillaRepository interface {
 	GetAllVilla() ([]response.VillaListResponse, error)
-	GetVillaBySlug(slug string) (*models.Villa, error)
+	GetVillaBySlug(slug string) (*response.VillaListResponse, error)
 	CreateVilla(models.Villa) (*response.VillaListResponse, error)
 	DeleteVilla(uuid.UUID) (bool, error)
 	UpdateVilla(request.VillaRequest, uuid.UUID) (bool, error)
@@ -32,10 +32,10 @@ func (v *VillaRepositoryImpl) GetAllVilla() ([]response.VillaListResponse, error
 
 	var items []models.Villa
 
-	VillaRecordException := v.db.Table("properties_villa").Find(&items)
+	VillaRecordException := v.db.Table("properties_villa").Joins("Location").Find(&items)
 
 	if VillaRecordException.RowsAffected == 0 {
-		return nil, errors.New("Villa record is empty")
+		return nil, errors.New("Villa records is empty")
 	}
 
 	MappingItems := response.SetVillaResponse(items)
@@ -43,17 +43,20 @@ func (v *VillaRepositoryImpl) GetAllVilla() ([]response.VillaListResponse, error
 	return MappingItems, nil
 }
 
-func (v *VillaRepositoryImpl) GetVillaBySlug(slug string) (*models.Villa, error) {
+func (v *VillaRepositoryImpl) GetVillaBySlug(slug string) (*response.VillaListResponse, error) {
 
 	var items models.Villa
+	var LocationDetail response.VillaListResponse
 
-	VillaRecordException := v.db.Table("properties_villa").First(&items, "slug = ?", slug)
+	VillaRecordException := v.db.Table("properties_villa").Joins("Location").First(&items, "slug = ?", slug)
 
 	if VillaRecordException.Error == gorm.ErrRecordNotFound {
 		return nil, errors.New("Villa record not found")
 	}
 
-	return &items, nil
+	LocationDetail.SetVillaDetailResponse(items)
+
+	return &LocationDetail, nil
 
 }
 

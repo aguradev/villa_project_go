@@ -34,7 +34,7 @@ func (v *VillaControllerImpl) VillaListsHandler(ctx echo.Context) error {
 		return exceptions.NotFoundException(ctx, "Villa record is empty")
 	}
 
-	return response.HandleSuccess(ctx, DataVilla, "Retrieved Villa Lists", http.StatusOK)
+	return response.HandleSuccess(ctx, DataVilla, "Retrieved data villa", http.StatusOK)
 
 }
 
@@ -72,5 +72,5 @@ func (v *VillaControllerImpl) CreateNewVillaHandler(ctx echo.Context) error {
 		return exceptions.AppException(ctx, QueryException.Error())
 	}
 
-	return response.HandleSuccess(ctx, ResponseNewVilla, "Success create new villa", http.StatusCreated)
+	return response.HandleSuccess(ctx, ResponseNewVilla, "Villa created", http.StatusCreated)
 }
