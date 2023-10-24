@@ -2,6 +2,7 @@ package domain
 
 import (
 	"villa_go/controllers"
+	"villa_go/middlewares"
 	"villa_go/repositories"
 	"villa_go/services"
 
@@ -18,5 +19,5 @@ func BindingDepedencyVilla(db *gorm.DB, route *echo.Group, validate *validator.V
 	VillaHandler := controllers.NewVillaController(VillaService)
 
 	route.GET("/villa", VillaHandler.VillaListsHandler)
-	route.POST("/villa/create", VillaHandler.CreateNewVillaHandler)
+	route.POST("/villa", VillaHandler.CreateNewVillaHandler, middlewares.AccessbilityRole("Admin"))
 }

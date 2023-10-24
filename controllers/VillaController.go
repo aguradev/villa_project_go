@@ -34,7 +34,7 @@ func (v *VillaControllerImpl) VillaListsHandler(ctx echo.Context) error {
 		return exceptions.NotFoundException(ctx, "Villa record is empty")
 	}
 
-	return response.HandleSuccess(ctx, DataVilla, "Get Villa Lists", http.StatusOK)
+	return response.HandleSuccess(ctx, DataVilla, "Retrieved Villa Lists", http.StatusOK)
 
 }
 

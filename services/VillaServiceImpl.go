@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"villa_go/entities/models"
 	"villa_go/exceptions"
 	"villa_go/payloads/request"
@@ -58,6 +59,8 @@ func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*re
 
 	var VillaReq models.Villa
 
+	fmt.Println(utils.ConvertClockTime(requestData.Check_in).String())
+
 	VillaReq = models.Villa{
 		Name:            requestData.Name,
 		Slug:            slug.Make(requestData.Name),
@@ -65,7 +68,7 @@ func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*re
 		Price_per_night: requestData.Price_per_night,
 		Check_in:        utils.ConvertClockTime(requestData.Check_in),
 		Check_out:       utils.ConvertClockTime(requestData.Check_out),
-		Status:          "Published",
+		Status:          "published",
 	}
 
 	QueryCreate, QueryErrException := v.VillaRepository.CreateVilla(VillaReq)

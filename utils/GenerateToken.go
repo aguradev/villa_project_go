@@ -18,7 +18,7 @@ func GenerateToken(User models.Users, ctx echo.Context) (*UserResponse.AuthToken
 	Payload.Id = User.Credential_id
 	Payload.Username = User.Credential.Username
 	Payload.Roles = User.Credential.Roles.Role
-	Payload.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * 300))
+	Payload.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * 48))
 
 	GetToken := jwt.NewWithClaims(jwt.SigningMethodHS256, Payload)
 

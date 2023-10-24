@@ -13,6 +13,7 @@ type Villa struct {
 	Name            string          `gorm:"type:varchar(50)"`
 	Slug            string          `gorm:"type:varchar(50)"`
 	Description     string          `gorm:"type:text"`
+	Max_capacity    uint            `gorm:"type:int"`
 	Price_per_night decimal.Decimal `gorm:"type:decimal(10,2)"`
 	Check_in        time.Time       `gorm:"type:time"`
 	Check_out       time.Time       `gorm:"type:time"`
