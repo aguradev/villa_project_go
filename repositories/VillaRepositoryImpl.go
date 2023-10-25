@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"errors"
-	"villa_go/models/schemas"
+	"villa_go/models/entities"
 	"villa_go/payloads/request"
 	"villa_go/payloads/resources"
 
@@ -13,7 +13,7 @@ import (
 type VillaRepository interface {
 	GetAllVilla() ([]resources.VillaListResponse, error)
 	GetVillaBySlug(slug string) (*resources.VillaListResponse, error)
-	CreateVilla(schemas.Villa) (*resources.VillaListResponse, error)
+	CreateVilla(entities.Villa) (*resources.VillaListResponse, error)
 	DeleteVilla(uuid.UUID) (bool, error)
 	UpdateVilla(request.VillaRequest, uuid.UUID) (bool, error)
 }
@@ -30,7 +30,7 @@ func NewVillaRepositoryImplement(Db *gorm.DB) VillaRepository {
 
 func (v *VillaRepositoryImpl) GetAllVilla() ([]resources.VillaListResponse, error) {
 
-	var items []schemas.Villa
+	var items []entities.Villa
 
 	VillaRecordException := v.db.Table("properties_villa").Joins("Location").Find(&items)
 
@@ -45,7 +45,7 @@ func (v *VillaRepositoryImpl) GetAllVilla() ([]resources.VillaListResponse, erro
 
 func (v *VillaRepositoryImpl) GetVillaBySlug(slug string) (*resources.VillaListResponse, error) {
 
-	var items schemas.Villa
+	var items entities.Villa
 	var LocationDetail resources.VillaListResponse
 
 	VillaRecordException := v.db.Table("properties_villa").Joins("Location").First(&items, "slug = ?", slug)
@@ -60,7 +60,7 @@ func (v *VillaRepositoryImpl) GetVillaBySlug(slug string) (*resources.VillaListR
 
 }
 
-func (v *VillaRepositoryImpl) CreateVilla(request schemas.Villa) (*resources.VillaListResponse, error) {
+func (v *VillaRepositoryImpl) CreateVilla(request entities.Villa) (*resources.VillaListResponse, error) {
 
 	var Result resources.VillaListResponse
 
@@ -77,14 +77,18 @@ func (v *VillaRepositoryImpl) CreateVilla(request schemas.Villa) (*resources.Vil
 
 func (v *VillaRepositoryImpl) DeleteVilla(id uuid.UUID) (bool, error) {
 
-	var items schemas.Villa
+	var items entities.Villa
 
-	if VillaRecordException := v.db.Table("properties_villa").Delete(&items, id); VillaRecordException.Error != nil {
+	if VillaRecordException := v.db.Table("properties_villa").First(&items, "id = ?", id); VillaRecordException.Error != nil {
 		if VillaRecordException.Error == gorm.ErrRecordNotFound {
 			return false, errors.New("Villa record not exist")
 		}
 
 		return false, VillaRecordException.Error
+	}
+
+	if DeleteException := v.db.Delete(&items); DeleteException.Error != nil {
+		return false, DeleteException.Error
 	}
 
 	return true, nil

@@ -3,7 +3,7 @@ package resources
 import (
 	"strconv"
 	"time"
-	"villa_go/models/schemas"
+	"villa_go/models/entities"
 )
 
 type VillaListResponse struct {
@@ -20,7 +20,7 @@ type VillaListResponse struct {
 	Location        *VillaLocationResponse `json:"location,omitempty"`
 }
 
-func SetVillaResponse(Villa []schemas.Villa) []VillaListResponse {
+func SetVillaResponse(Villa []entities.Villa) []VillaListResponse {
 
 	var SetVillaResponse []VillaListResponse
 
@@ -49,7 +49,7 @@ func SetVillaResponse(Villa []schemas.Villa) []VillaListResponse {
 
 }
 
-func (v *VillaListResponse) SetVillaDetailResponse(villa schemas.Villa) {
+func (v *VillaListResponse) SetVillaDetailResponse(villa entities.Villa) {
 	setPrice, err := strconv.Atoi(villa.Price_per_night.String())
 
 	if err != nil {
@@ -63,8 +63,8 @@ func (v *VillaListResponse) SetVillaDetailResponse(villa schemas.Villa) {
 	v.Max_capacity = villa.Max_capacity
 	v.Price_per_night = setPrice
 	v.Slug = villa.Slug
-	v.Check_in = &villa.Check_in
-	v.Check_out = &villa.Check_out
+	v.Check_in = villa.Check_in
+	v.Check_out = villa.Check_out
 	v.Status = villa.Status
 
 	if villa.Location != nil {

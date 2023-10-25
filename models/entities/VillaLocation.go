@@ -14,3 +14,7 @@ type VillaLocation struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
 }
+
+func (VillaLocation) TableName() string {
+	return "location"
+}

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 	"villa_go/exceptions"
-	"villa_go/models/schemas"
+	"villa_go/models/entities"
 	"villa_go/payloads/request"
 	"villa_go/payloads/resources"
 	"villa_go/repositories"
@@ -79,15 +79,15 @@ func (v *VillaServiceImpl) DeleteDataVilla(id uuid.UUID) (bool, error) {
 
 func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*resources.VillaListResponse, []exceptions.ValidationMessage, error) {
 
-	var VillaReq schemas.Villa
+	var VillaReq entities.Villa
 
-	VillaReq = schemas.Villa{
+	VillaReq = entities.Villa{
 		Name:            requestData.Name,
 		Slug:            slug.Make(requestData.Name),
 		Description:     requestData.Description,
 		Address:         requestData.Address,
 		Max_capacity:    requestData.Max_capacity,
-		Price_per_night: requestData.Price_per_night,
+		Price_per_night: &requestData.Price_per_night,
 		Check_in:        utils.ConvertClockTime(requestData.Check_in),
 		Check_out:       utils.ConvertClockTime(requestData.Check_out),
 		Status:          "available",

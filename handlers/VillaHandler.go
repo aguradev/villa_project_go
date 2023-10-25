@@ -88,7 +88,7 @@ func (v *VillaHandlerImpl) DeleteVillaHandler(ctx echo.Context) error {
 	Deleted, QueryException := v.VillaService.DeleteDataVilla(GetId)
 
 	if !Deleted && QueryException != nil {
-		return exceptions.AppException(ctx, "Failed Deleted villa")
+		return exceptions.NotFoundException(ctx, QueryException.Error())
 	}
 
 	return response.HandleResponseDelete(ctx, "Villa Deleted")

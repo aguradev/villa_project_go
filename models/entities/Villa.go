@@ -9,19 +9,23 @@ import (
 )
 
 type Villa struct {
-	Id              uuid.UUID `gorm:"default:uuid_generate_v4()"`
+	Id              *uuid.UUID `gorm:"default:uuid_generate_v4()"`
 	Location_id     *uuid.UUID
 	Location        *VillaLocation
 	Name            string
 	Slug            string
 	Description     string
 	Max_capacity    uint
-	Price_per_night decimal.Decimal
-	Check_in        time.Time
-	Check_out       time.Time
+	Price_per_night *decimal.Decimal
+	Check_in        *time.Time
+	Check_out       *time.Time
 	Address         string
 	Status          string
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt
+	CreatedAt       *time.Time
+	UpdatedAt       *time.Time
+	DeletedAt       *gorm.DeletedAt
+}
+
+func (Villa) TableName() string {
+	return "properties_villa"
 }
