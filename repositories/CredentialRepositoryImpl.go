@@ -4,7 +4,7 @@ import (
 	"errors"
 	"villa_go/models/entities"
 	"villa_go/payloads/request"
-	"villa_go/payloads/response"
+	"villa_go/payloads/resources"
 	"villa_go/utils"
 
 	"gorm.io/gorm"
@@ -13,7 +13,7 @@ import (
 type CredentialRepository interface {
 	GetRoleUserForRegister(role string) (entities.Roles, error)
 	CheckAuthCredential(request.AuthRequest) (*entities.Users, bool, error)
-	RegisterUserCredential(entities.Users) (*response.RegisterResponse, error)
+	RegisterUserCredential(entities.Users) (*resources.RegisterResponse, error)
 }
 
 type CredentialRepositoryImplement struct {
@@ -26,9 +26,9 @@ func NewCredentialRepository(db *gorm.DB) CredentialRepository {
 	}
 }
 
-func (account *CredentialRepositoryImplement) RegisterUserCredential(User entities.Users) (*response.RegisterResponse, error) {
+func (account *CredentialRepositoryImplement) RegisterUserCredential(User entities.Users) (*resources.RegisterResponse, error) {
 
-	RegisterResponse := &response.RegisterResponse{}
+	RegisterResponse := &resources.RegisterResponse{}
 
 	if RegisterException := account.Db.Create(&User).Error; RegisterException != nil {
 		return nil, RegisterException

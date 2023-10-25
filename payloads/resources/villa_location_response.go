@@ -1,4 +1,4 @@
-package response
+package resources
 
 import "villa_go/models/schemas"
 

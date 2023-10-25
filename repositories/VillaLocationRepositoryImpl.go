@@ -3,14 +3,14 @@ package repositories
 import (
 	"errors"
 	"villa_go/models/schemas"
-	"villa_go/payloads/response"
+	"villa_go/payloads/resources"
 
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
 
 type VillaLocationRepository interface {
-	GetAllLocation() ([]response.VillaLocationResponse, error)
+	GetAllLocation() ([]resources.VillaLocationResponse, error)
 	GetLocationById(id uuid.UUID) (*schemas.VillaLocation, error)
 	CreateNewLocation(schemas.VillaLocation) (*schemas.VillaLocation, error)
 	DeleteLocation(id uuid.UUID)
@@ -39,11 +39,11 @@ func (l *VillaLocationRepositoryImpl) CreateNewLocation(location schemas.VillaLo
 
 }
 
-func (l *VillaLocationRepositoryImpl) GetAllLocation() ([]response.VillaLocationResponse, error) {
+func (l *VillaLocationRepositoryImpl) GetAllLocation() ([]resources.VillaLocationResponse, error) {
 
 	var (
 		Locations        []schemas.VillaLocation
-		MappingLocations []response.VillaLocationResponse
+		MappingLocations []resources.VillaLocationResponse
 	)
 
 	LocationRecordException := l.db.Table("location").Find(&Locations)
@@ -56,7 +56,7 @@ func (l *VillaLocationRepositoryImpl) GetAllLocation() ([]response.VillaLocation
 		return nil, LocationRecordException.Error
 	}
 
-	MappingLocations = response.VillaLocationsReponses(Locations)
+	MappingLocations = resources.VillaLocationsReponses(Locations)
 
 	return MappingLocations, nil
 

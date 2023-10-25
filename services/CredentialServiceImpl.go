@@ -5,7 +5,7 @@ import (
 	"villa_go/exceptions"
 	"villa_go/models/entities"
 	"villa_go/payloads/request"
-	"villa_go/payloads/response"
+	"villa_go/payloads/resources"
 	"villa_go/repositories"
 	"villa_go/utils"
 
@@ -16,8 +16,8 @@ import (
 )
 
 type CredentialService interface {
-	RegisterCredential(request.RegisterRequest) (*response.RegisterResponse, error)
-	AuthUser(echo.Context, request.AuthRequest) (*response.AuthToken, []exceptions.ValidationMessage, error)
+	RegisterCredential(request.RegisterRequest) (*resources.RegisterResponse, error)
+	AuthUser(echo.Context, request.AuthRequest) (*resources.AuthToken, []exceptions.ValidationMessage, error)
 }
 
 type CredentialServiceImpl struct {
@@ -34,7 +34,7 @@ func CreateCredentialServiceImplement(Credential repositories.CredentialReposito
 	}
 }
 
-func (Credential *CredentialServiceImpl) RegisterCredential(register request.RegisterRequest) (*response.RegisterResponse, error) {
+func (Credential *CredentialServiceImpl) RegisterCredential(register request.RegisterRequest) (*resources.RegisterResponse, error) {
 	User := &entities.Users{}
 
 	CredentialRequest := request.CredentialRequest{
@@ -75,7 +75,7 @@ func (Credential *CredentialServiceImpl) RegisterCredential(register request.Reg
 
 }
 
-func (Credential *CredentialServiceImpl) AuthUser(ctx echo.Context, request request.AuthRequest) (*response.AuthToken, []exceptions.ValidationMessage, error) {
+func (Credential *CredentialServiceImpl) AuthUser(ctx echo.Context, request request.AuthRequest) (*resources.AuthToken, []exceptions.ValidationMessage, error) {
 
 	ValidationException := Credential.Validator.Struct(request)
 

@@ -2,10 +2,11 @@ package services
 
 import (
 	"errors"
+	"strings"
 	"villa_go/exceptions"
 	"villa_go/models/schemas"
 	"villa_go/payloads/request"
-	"villa_go/payloads/response"
+	"villa_go/payloads/resources"
 	"villa_go/repositories"
 	"villa_go/utils"
 
@@ -16,11 +17,11 @@ import (
 )
 
 type VillaService interface {
-	VillaLists() ([]response.VillaListResponse, error)
-	VillaDataDetail(slug string) (*response.VillaListResponse, error)
-	CreateNewVilla(request.VillaRequest) (*response.VillaListResponse, []exceptions.ValidationMessage, error)
+	VillaLists() ([]resources.VillaListResponse, error)
+	VillaDataDetail(slug string) (*resources.VillaListResponse, error)
+	CreateNewVilla(request.VillaRequest) (*resources.VillaListResponse, []exceptions.ValidationMessage, error)
 	DeleteDataVilla(uuid.UUID) (bool, error)
-	UpdateDataVilla(request.VillaRequest, uuid.UUID) (*response.VillaListResponse, error)
+	UpdateDataVilla(request.VillaRequest, uuid.UUID) (*resources.VillaListResponse, error)
 }
 
 type VillaServiceImpl struct {
@@ -39,7 +40,7 @@ func NewVillaServiceImplement(villaRepo repositories.VillaRepository, locationRe
 	}
 }
 
-func (v *VillaServiceImpl) VillaLists() ([]response.VillaListResponse, error) {
+func (v *VillaServiceImpl) VillaLists() ([]resources.VillaListResponse, error) {
 
 	GetVillaList, QueryException := v.VillaRepository.GetAllVilla()
 
@@ -50,7 +51,7 @@ func (v *VillaServiceImpl) VillaLists() ([]response.VillaListResponse, error) {
 	return GetVillaList, nil
 }
 
-func (v *VillaServiceImpl) VillaDataDetail(slug string) (*response.VillaListResponse, error) {
+func (v *VillaServiceImpl) VillaDataDetail(slug string) (*resources.VillaListResponse, error) {
 
 	GetVillaDetail, QueryException := v.VillaRepository.GetVillaBySlug(slug)
 
@@ -62,10 +63,21 @@ func (v *VillaServiceImpl) VillaDataDetail(slug string) (*response.VillaListResp
 }
 
 func (v *VillaServiceImpl) DeleteDataVilla(id uuid.UUID) (bool, error) {
-	return false, nil
+
+	isDeleted, QueryException := v.VillaRepository.DeleteVilla(id)
+
+	if !isDeleted {
+		if strings.Contains(QueryException.Error(), "Villa record not exist") {
+			return false, errors.New("Villa record not exist")
+		}
+
+		return false, QueryException
+	}
+
+	return true, nil
 }
 
-func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*response.VillaListResponse, []exceptions.ValidationMessage, error) {
+func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*resources.VillaListResponse, []exceptions.ValidationMessage, error) {
 
 	var VillaReq schemas.Villa
 
@@ -101,6 +113,6 @@ func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*re
 	return QueryCreate, nil, nil
 }
 
-func (v *VillaServiceImpl) UpdateDataVilla(request request.VillaRequest, id uuid.UUID) (*response.VillaListResponse, error) {
+func (v *VillaServiceImpl) UpdateDataVilla(request request.VillaRequest, id uuid.UUID) (*resources.VillaListResponse, error) {
 	return nil, nil
 }

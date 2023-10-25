@@ -5,7 +5,7 @@ import (
 	"villa_go/exceptions"
 	"villa_go/models/schemas"
 	"villa_go/payloads/request"
-	"villa_go/payloads/response"
+	"villa_go/payloads/resources"
 	"villa_go/repositories"
 	"villa_go/utils"
 
@@ -15,8 +15,8 @@ import (
 )
 
 type VillaLocationService interface {
-	ListsDataLocation() ([]response.VillaLocationResponse, error)
-	CreateNewLocation(echo.Context, request.LocationRequest) ([]response.VillaLocationResponse, []exceptions.ValidationMessage, error)
+	ListsDataLocation() ([]resources.VillaLocationResponse, error)
+	CreateNewLocation(echo.Context, request.LocationRequest) ([]resources.VillaLocationResponse, []exceptions.ValidationMessage, error)
 }
 
 type VillaLocationServiceImpl struct {
@@ -33,7 +33,7 @@ func NewVillaLocationServiceImplement(VillaLocation repositories.VillaLocationRe
 	}
 }
 
-func (l *VillaLocationServiceImpl) ListsDataLocation() ([]response.VillaLocationResponse, error) {
+func (l *VillaLocationServiceImpl) ListsDataLocation() ([]resources.VillaLocationResponse, error) {
 
 	LocationRecords, QueryException := l.location.GetAllLocation()
 
@@ -44,10 +44,10 @@ func (l *VillaLocationServiceImpl) ListsDataLocation() ([]response.VillaLocation
 	return LocationRecords, nil
 }
 
-func (l *VillaLocationServiceImpl) CreateNewLocation(ctx echo.Context, request request.LocationRequest) ([]response.VillaLocationResponse, []exceptions.ValidationMessage, error) {
+func (l *VillaLocationServiceImpl) CreateNewLocation(ctx echo.Context, request request.LocationRequest) ([]resources.VillaLocationResponse, []exceptions.ValidationMessage, error) {
 
 	var Locations []schemas.VillaLocation
-	var MappingLocations []response.VillaLocationResponse
+	var MappingLocations []resources.VillaLocationResponse
 
 	ValidationException := l.validation.Struct(request)
 
@@ -70,7 +70,7 @@ func (l *VillaLocationServiceImpl) CreateNewLocation(ctx echo.Context, request r
 
 	}
 
-	MappingLocations = response.VillaLocationsReponses(Locations)
+	MappingLocations = resources.VillaLocationsReponses(Locations)
 
 	return MappingLocations, nil, nil
 

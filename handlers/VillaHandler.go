@@ -8,25 +8,27 @@ import (
 	"villa_go/services"
 
 	"github.com/labstack/echo/v4"
+	uuid "github.com/satori/go.uuid"
 )
 
-type VillaController interface {
+type VillaHandler interface {
 	VillaListsHandler(echo.Context) error
 	VillaDetailHandler(echo.Context) error
 	CreateNewVillaHandler(echo.Context) error
+	DeleteVillaHandler(echo.Context) error
 }
 
-type VillaControllerImpl struct {
+type VillaHandlerImpl struct {
 	VillaService services.VillaService
 }
 
-func NewVillaController(villaService services.VillaService) VillaController {
-	return &VillaControllerImpl{
+func NewVillaHandler(villaService services.VillaService) VillaHandler {
+	return &VillaHandlerImpl{
 		VillaService: villaService,
 	}
 }
 
-func (v *VillaControllerImpl) VillaListsHandler(ctx echo.Context) error {
+func (v *VillaHandlerImpl) VillaListsHandler(ctx echo.Context) error {
 
 	DataVilla, RecordException := v.VillaService.VillaLists()
 
@@ -38,7 +40,7 @@ func (v *VillaControllerImpl) VillaListsHandler(ctx echo.Context) error {
 
 }
 
-func (v *VillaControllerImpl) VillaDetailHandler(ctx echo.Context) error {
+func (v *VillaHandlerImpl) VillaDetailHandler(ctx echo.Context) error {
 
 	GetSlug := ctx.Param("slug")
 
@@ -52,7 +54,7 @@ func (v *VillaControllerImpl) VillaDetailHandler(ctx echo.Context) error {
 
 }
 
-func (v *VillaControllerImpl) CreateNewVillaHandler(ctx echo.Context) error {
+func (v *VillaHandlerImpl) CreateNewVillaHandler(ctx echo.Context) error {
 
 	var Request request.VillaRequest
 
@@ -73,4 +75,21 @@ func (v *VillaControllerImpl) CreateNewVillaHandler(ctx echo.Context) error {
 	}
 
 	return response.HandleSuccess(ctx, ResponseNewVilla, "Villa created", http.StatusCreated)
+}
+
+func (v *VillaHandlerImpl) DeleteVillaHandler(ctx echo.Context) error {
+
+	GetId, ParsingException := uuid.FromString(ctx.Param("id"))
+
+	if ParsingException != nil {
+		return exceptions.AppException(ctx, ParsingException.Error())
+	}
+
+	Deleted, QueryException := v.VillaService.DeleteDataVilla(GetId)
+
+	if !Deleted && QueryException != nil {
+		return exceptions.AppException(ctx, "Failed Deleted villa")
+	}
+
+	return response.HandleResponseDelete(ctx, "Villa Deleted")
 }

@@ -18,9 +18,10 @@ func BindingDepedencyVilla(db *gorm.DB, route *echo.Group, validate *validator.V
 	LocationRepo := repositories.NewVillaLocationRepositoryImplement(db)
 
 	VillaService := services.NewVillaServiceImplement(VillaRepo, LocationRepo, *validate, trans)
-	VillaHandler := handlers.NewVillaController(VillaService)
+	VillaHandler := handlers.NewVillaHandler(VillaService)
 
 	route.GET("/villa", VillaHandler.VillaListsHandler)
 	route.GET("/villa/:slug", VillaHandler.VillaDetailHandler)
 	route.POST("/villa", VillaHandler.CreateNewVillaHandler, middlewares.AccessbilityRole("Admin"))
+	route.DELETE("/villa/:id", VillaHandler.DeleteVillaHandler, middlewares.AccessbilityRole("Admin"))
 }
