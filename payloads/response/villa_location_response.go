@@ -1,15 +1,13 @@
 package response
 
-import (
-	"villa_go/entities/models"
-)
+import "villa_go/models/schemas"
 
 type VillaLocationResponse struct {
 	Id   string `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
 }
 
-func VillaLocationsReponses(locations []models.VillaLocation) []VillaLocationResponse {
+func VillaLocationsReponses(locations []schemas.VillaLocation) []VillaLocationResponse {
 
 	var Listlocations []VillaLocationResponse
 
@@ -28,7 +26,7 @@ func VillaLocationsReponses(locations []models.VillaLocation) []VillaLocationRes
 
 }
 
-func (L *VillaLocationResponse) VillaDetailLocationResponse(location models.VillaLocation) {
+func (L *VillaLocationResponse) VillaDetailLocationResponse(location schemas.VillaLocation) {
 	L.Id = location.Id.String()
 	L.Name = location.Name
 }

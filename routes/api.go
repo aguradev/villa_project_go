@@ -2,8 +2,8 @@ package routes
 
 import (
 	"villa_go/config"
-	"villa_go/entities/domain"
 	"villa_go/middlewares"
+	"villa_go/modules"
 
 	"github.com/go-playground/validator/v10/translations/en"
 	"github.com/labstack/echo/v4"
@@ -20,9 +20,9 @@ func ApiRoutes(db *gorm.DB) {
 
 	verifyJWT := api.Group("", middlewares.LoginSignedIn())
 
-	domain.BindingDependencyCredentials(db, api, validate, trans)
-	domain.BindingDepedencyVilla(db, verifyJWT, validate, trans)
-	domain.BindingDepedencyVillaLocation(db, verifyJWT, validate, trans)
+	modules.BindingDependencyCredentials(db, api, validate, trans)
+	modules.BindingDepedencyVilla(db, verifyJWT, validate, trans)
+	modules.BindingDepedencyVillaLocation(db, verifyJWT, validate, trans)
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
 }

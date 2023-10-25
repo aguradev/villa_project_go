@@ -3,10 +3,11 @@ package response
 import (
 	"strconv"
 	"time"
-	"villa_go/entities/models"
+	"villa_go/models/schemas"
 )
 
 type VillaListResponse struct {
+	Id              string                 `json:"id ,omitempty"`
 	Name            string                 `json:"name"`
 	Slug            string                 `json:"slug"`
 	Description     string                 `json:"description,omitempty"`
@@ -19,7 +20,7 @@ type VillaListResponse struct {
 	Location        *VillaLocationResponse `json:"location,omitempty"`
 }
 
-func SetVillaResponse(Villa []models.Villa) []VillaListResponse {
+func SetVillaResponse(Villa []schemas.Villa) []VillaListResponse {
 
 	var SetVillaResponse []VillaListResponse
 
@@ -48,13 +49,14 @@ func SetVillaResponse(Villa []models.Villa) []VillaListResponse {
 
 }
 
-func (v *VillaListResponse) SetVillaDetailResponse(villa models.Villa) {
+func (v *VillaListResponse) SetVillaDetailResponse(villa schemas.Villa) {
 	setPrice, err := strconv.Atoi(villa.Price_per_night.String())
 
 	if err != nil {
 		setPrice = 0
 	}
 
+	v.Id = villa.Id.String()
 	v.Name = villa.Name
 	v.Description = villa.Description
 	v.Address = villa.Address
@@ -64,8 +66,11 @@ func (v *VillaListResponse) SetVillaDetailResponse(villa models.Villa) {
 	v.Check_in = &villa.Check_in
 	v.Check_out = &villa.Check_out
 	v.Status = villa.Status
-	v.Location = &VillaLocationResponse{
-		Id:   villa.Location.Id.String(),
-		Name: villa.Location.Name,
+
+	if villa.Location != nil {
+		v.Location = &VillaLocationResponse{
+			Id:   villa.Location.Id.String(),
+			Name: villa.Location.Name,
+		}
 	}
 }

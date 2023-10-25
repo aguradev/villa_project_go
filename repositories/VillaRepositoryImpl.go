@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"errors"
-	"villa_go/entities/models"
+	"villa_go/models/schemas"
 	"villa_go/payloads/request"
 	"villa_go/payloads/response"
 
@@ -13,7 +13,7 @@ import (
 type VillaRepository interface {
 	GetAllVilla() ([]response.VillaListResponse, error)
 	GetVillaBySlug(slug string) (*response.VillaListResponse, error)
-	CreateVilla(models.Villa) (*response.VillaListResponse, error)
+	CreateVilla(schemas.Villa) (*response.VillaListResponse, error)
 	DeleteVilla(uuid.UUID) (bool, error)
 	UpdateVilla(request.VillaRequest, uuid.UUID) (bool, error)
 }
@@ -30,7 +30,7 @@ func NewVillaRepositoryImplement(Db *gorm.DB) VillaRepository {
 
 func (v *VillaRepositoryImpl) GetAllVilla() ([]response.VillaListResponse, error) {
 
-	var items []models.Villa
+	var items []schemas.Villa
 
 	VillaRecordException := v.db.Table("properties_villa").Joins("Location").Find(&items)
 
@@ -45,7 +45,7 @@ func (v *VillaRepositoryImpl) GetAllVilla() ([]response.VillaListResponse, error
 
 func (v *VillaRepositoryImpl) GetVillaBySlug(slug string) (*response.VillaListResponse, error) {
 
-	var items models.Villa
+	var items schemas.Villa
 	var LocationDetail response.VillaListResponse
 
 	VillaRecordException := v.db.Table("properties_villa").Joins("Location").First(&items, "slug = ?", slug)
@@ -60,7 +60,7 @@ func (v *VillaRepositoryImpl) GetVillaBySlug(slug string) (*response.VillaListRe
 
 }
 
-func (v *VillaRepositoryImpl) CreateVilla(request models.Villa) (*response.VillaListResponse, error) {
+func (v *VillaRepositoryImpl) CreateVilla(request schemas.Villa) (*response.VillaListResponse, error) {
 
 	var Result response.VillaListResponse
 
@@ -77,7 +77,7 @@ func (v *VillaRepositoryImpl) CreateVilla(request models.Villa) (*response.Villa
 
 func (v *VillaRepositoryImpl) DeleteVilla(id uuid.UUID) (bool, error) {
 
-	var items models.Villa
+	var items schemas.Villa
 
 	VillaRecordException := v.db.Table("properties_villa").Delete(&items, id)
 
