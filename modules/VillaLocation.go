@@ -1,7 +1,7 @@
-package domain
+package modules
 
 import (
-	"villa_go/controllers"
+	"villa_go/handlers"
 	"villa_go/middlewares"
 	"villa_go/repositories"
 	"villa_go/services"
@@ -15,7 +15,7 @@ import (
 func BindingDepedencyVillaLocation(db *gorm.DB, route *echo.Group, validate *validator.Validate, trans ut.Translator) {
 	LocationRepo := repositories.NewVillaLocationRepositoryImplement(db)
 	LocationService := services.NewVillaLocationServiceImplement(LocationRepo, *validate, trans)
-	LocationHandler := controllers.NewLocationHandlerImpl(LocationService)
+	LocationHandler := handlers.NewLocationHandlerImpl(LocationService)
 
 	route.Use(middlewares.AccessbilityRole("Admin"))
 	route.GET("/location", LocationHandler.ListsLocationHandler)

@@ -2,8 +2,8 @@ package services
 
 import (
 	"errors"
-	"villa_go/entities/models"
 	"villa_go/exceptions"
+	"villa_go/models/schemas"
 	"villa_go/payloads/request"
 	"villa_go/payloads/response"
 	"villa_go/repositories"
@@ -46,7 +46,7 @@ func (l *VillaLocationServiceImpl) ListsDataLocation() ([]response.VillaLocation
 
 func (l *VillaLocationServiceImpl) CreateNewLocation(ctx echo.Context, request request.LocationRequest) ([]response.VillaLocationResponse, []exceptions.ValidationMessage, error) {
 
-	var Locations []models.VillaLocation
+	var Locations []schemas.VillaLocation
 	var MappingLocations []response.VillaLocationResponse
 
 	ValidationException := l.validation.Struct(request)
@@ -57,7 +57,7 @@ func (l *VillaLocationServiceImpl) CreateNewLocation(ctx echo.Context, request r
 
 	for index := range request.Name {
 
-		var VillaLocation models.VillaLocation
+		var VillaLocation schemas.VillaLocation
 		VillaLocation.Name = request.Name[index]
 
 		LocationRecord, CreateQueryException := l.location.CreateNewLocation(VillaLocation)

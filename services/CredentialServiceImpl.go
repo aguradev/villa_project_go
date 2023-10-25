@@ -2,11 +2,11 @@ package services
 
 import (
 	"errors"
-	"villa_go/entities/models"
 	"villa_go/exceptions"
+	"villa_go/models/entities"
 	"villa_go/payloads/request"
-	UserResponse "villa_go/payloads/response/user_response"
-	CredentialRepo "villa_go/repositories/Credentials"
+	"villa_go/payloads/response"
+	"villa_go/repositories"
 	"villa_go/utils"
 
 	ut "github.com/go-playground/universal-translator"
@@ -15,13 +15,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type CredentialService interface {
+	RegisterCredential(request.RegisterRequest) (*response.RegisterResponse, error)
+	AuthUser(echo.Context, request.AuthRequest) (*response.AuthToken, []exceptions.ValidationMessage, error)
+}
+
 type CredentialServiceImpl struct {
-	CredentialRepository CredentialRepo.CredentialRepository
+	CredentialRepository repositories.CredentialRepository
 	Validator            *validator.Validate
 	TranslatorValidation ut.Translator
 }
 
-func CreateCredentialServiceImplement(Credential CredentialRepo.CredentialRepository, validate *validator.Validate, trans ut.Translator) CredentialService {
+func CreateCredentialServiceImplement(Credential repositories.CredentialRepository, validate *validator.Validate, trans ut.Translator) CredentialService {
 	return &CredentialServiceImpl{
 		CredentialRepository: Credential,
 		Validator:            validate,
@@ -29,8 +34,8 @@ func CreateCredentialServiceImplement(Credential CredentialRepo.CredentialReposi
 	}
 }
 
-func (Credential *CredentialServiceImpl) RegisterCredential(register request.RegisterRequest) (*UserResponse.RegisterResponse, error) {
-	User := &models.Users{}
+func (Credential *CredentialServiceImpl) RegisterCredential(register request.RegisterRequest) (*response.RegisterResponse, error) {
+	User := &entities.Users{}
 
 	CredentialRequest := request.CredentialRequest{
 		Username: register.Username,
@@ -70,7 +75,7 @@ func (Credential *CredentialServiceImpl) RegisterCredential(register request.Reg
 
 }
 
-func (Credential *CredentialServiceImpl) AuthUser(ctx echo.Context, request request.AuthRequest) (*UserResponse.AuthToken, []exceptions.ValidationMessage, error) {
+func (Credential *CredentialServiceImpl) AuthUser(ctx echo.Context, request request.AuthRequest) (*response.AuthToken, []exceptions.ValidationMessage, error) {
 
 	ValidationException := Credential.Validator.Struct(request)
 

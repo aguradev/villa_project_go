@@ -2,13 +2,19 @@ package repositories
 
 import (
 	"errors"
-	"villa_go/entities/models"
+	"villa_go/models/entities"
 	"villa_go/payloads/request"
-	UserResponse "villa_go/payloads/response/user_response"
+	"villa_go/payloads/response"
 	"villa_go/utils"
 
 	"gorm.io/gorm"
 )
+
+type CredentialRepository interface {
+	GetRoleUserForRegister(role string) (entities.Roles, error)
+	CheckAuthCredential(request.AuthRequest) (*entities.Users, bool, error)
+	RegisterUserCredential(entities.Users) (*response.RegisterResponse, error)
+}
 
 type CredentialRepositoryImplement struct {
 	Db *gorm.DB
@@ -20,9 +26,9 @@ func NewCredentialRepository(db *gorm.DB) CredentialRepository {
 	}
 }
 
-func (account *CredentialRepositoryImplement) RegisterUserCredential(User models.Users) (*UserResponse.RegisterResponse, error) {
+func (account *CredentialRepositoryImplement) RegisterUserCredential(User entities.Users) (*response.RegisterResponse, error) {
 
-	RegisterResponse := &UserResponse.RegisterResponse{}
+	RegisterResponse := &response.RegisterResponse{}
 
 	if RegisterException := account.Db.Create(&User).Error; RegisterException != nil {
 		return nil, RegisterException
@@ -33,21 +39,21 @@ func (account *CredentialRepositoryImplement) RegisterUserCredential(User models
 	return RegisterResponse, nil
 }
 
-func (account *CredentialRepositoryImplement) GetRoleUserForRegister(role string) (models.Roles, error) {
-	var Roles models.Roles
+func (account *CredentialRepositoryImplement) GetRoleUserForRegister(role string) (entities.Roles, error) {
+	var Roles entities.Roles
 
 	RolesException := account.Db.Where("role = ?", role).First(&Roles)
 
 	if RolesException.Error != nil {
-		return models.Roles{}, errors.New("Roles not found")
+		return entities.Roles{}, errors.New("Roles not found")
 	}
 
 	return Roles, nil
 }
 
-func (account *CredentialRepositoryImplement) CheckAuthCredential(request request.AuthRequest) (*models.Users, bool, error) {
+func (account *CredentialRepositoryImplement) CheckAuthCredential(request request.AuthRequest) (*entities.Users, bool, error) {
 
-	var User models.Users
+	var User entities.Users
 
 	// cara lain
 	// account.Db.InnerJoins("Credential").InnerJoins("Credential.Roles").Find(&User, "username = ?", request.Username)

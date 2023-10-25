@@ -2,18 +2,18 @@ package utils
 
 import (
 	"time"
-	"villa_go/entities/models"
-	UserResponse "villa_go/payloads/response/user_response"
+	"villa_go/models/entities"
+	"villa_go/payloads/response"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 )
 
-func GenerateToken(User models.Users, ctx echo.Context) (*UserResponse.AuthToken, error) {
+func GenerateToken(User entities.Users, ctx echo.Context) (*response.AuthToken, error) {
 
-	var Auth UserResponse.AuthToken
-	var Payload UserResponse.JWTProfile
+	var Auth response.AuthToken
+	var Payload response.JWTProfile
 
 	Payload.Id = User.Credential_id
 	Payload.Username = User.Credential.Username

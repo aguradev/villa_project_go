@@ -1,7 +1,7 @@
-package domain
+package modules
 
 import (
-	"villa_go/controllers"
+	"villa_go/handlers"
 	"villa_go/middlewares"
 	"villa_go/repositories"
 	"villa_go/services"
@@ -18,7 +18,7 @@ func BindingDepedencyVilla(db *gorm.DB, route *echo.Group, validate *validator.V
 	LocationRepo := repositories.NewVillaLocationRepositoryImplement(db)
 
 	VillaService := services.NewVillaServiceImplement(VillaRepo, LocationRepo, *validate, trans)
-	VillaHandler := controllers.NewVillaController(VillaService)
+	VillaHandler := handlers.NewVillaController(VillaService)
 
 	route.GET("/villa", VillaHandler.VillaListsHandler)
 	route.GET("/villa/:slug", VillaHandler.VillaDetailHandler)

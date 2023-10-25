@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"errors"
-	"villa_go/entities/models"
+	"villa_go/models/schemas"
 	"villa_go/payloads/response"
 
 	uuid "github.com/satori/go.uuid"
@@ -11,8 +11,8 @@ import (
 
 type VillaLocationRepository interface {
 	GetAllLocation() ([]response.VillaLocationResponse, error)
-	GetLocationById(id uuid.UUID) (*models.VillaLocation, error)
-	CreateNewLocation(models.VillaLocation) (*models.VillaLocation, error)
+	GetLocationById(id uuid.UUID) (*schemas.VillaLocation, error)
+	CreateNewLocation(schemas.VillaLocation) (*schemas.VillaLocation, error)
 	DeleteLocation(id uuid.UUID)
 	UpdateLocation()
 }
@@ -27,7 +27,7 @@ func NewVillaLocationRepositoryImplement(Db *gorm.DB) VillaLocationRepository {
 	}
 }
 
-func (l *VillaLocationRepositoryImpl) CreateNewLocation(location models.VillaLocation) (*models.VillaLocation, error) {
+func (l *VillaLocationRepositoryImpl) CreateNewLocation(location schemas.VillaLocation) (*schemas.VillaLocation, error) {
 
 	QueryException := l.db.Table("location").Create(&location)
 
@@ -42,7 +42,7 @@ func (l *VillaLocationRepositoryImpl) CreateNewLocation(location models.VillaLoc
 func (l *VillaLocationRepositoryImpl) GetAllLocation() ([]response.VillaLocationResponse, error) {
 
 	var (
-		Locations        []models.VillaLocation
+		Locations        []schemas.VillaLocation
 		MappingLocations []response.VillaLocationResponse
 	)
 
@@ -62,8 +62,8 @@ func (l *VillaLocationRepositoryImpl) GetAllLocation() ([]response.VillaLocation
 
 }
 
-func (l *VillaLocationRepositoryImpl) GetLocationById(id uuid.UUID) (*models.VillaLocation, error) {
-	var VillaLocation models.VillaLocation
+func (l *VillaLocationRepositoryImpl) GetLocationById(id uuid.UUID) (*schemas.VillaLocation, error) {
+	var VillaLocation schemas.VillaLocation
 
 	QueryRecordException := l.db.Table("location").Find(&VillaLocation, "id = ?", id)
 

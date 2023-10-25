@@ -1,11 +1,19 @@
 package repositories
 
 import (
-	"villa_go/entities/models"
+	"villa_go/models/entities"
 
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
+
+type UserRepository interface {
+	GetAllUsers() ([]entities.Users, error)
+	GetUserById(uuid.UUID) (entities.Users, error)
+	CreateUser() (bool, error)
+	DeleteUser() (bool, error)
+	UpdateUser(uuid.UUID) (bool, error)
+}
 
 type UserRepositoryImplement struct {
 	Db *gorm.DB
@@ -17,12 +25,12 @@ func CreateNewUserRepositoryImplment(db *gorm.DB) UserRepository {
 	}
 }
 
-func (User *UserRepositoryImplement) GetAllUsers() ([]models.Users, error) {
+func (User *UserRepositoryImplement) GetAllUsers() ([]entities.Users, error) {
 	return nil, nil
 }
 
-func (User *UserRepositoryImplement) GetUserById(id uuid.UUID) (models.Users, error) {
-	return models.Users{}, nil
+func (User *UserRepositoryImplement) GetUserById(id uuid.UUID) (entities.Users, error) {
+	return entities.Users{}, nil
 }
 
 func (User *UserRepositoryImplement) CreateUser() (bool, error) {

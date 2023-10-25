@@ -1,11 +1,11 @@
-package controllers
+package handlers
 
 import (
 	"net/http"
 	"villa_go/exceptions"
 	"villa_go/payloads/request"
 	"villa_go/payloads/response"
-	CredentialService "villa_go/services/Credentials"
+	"villa_go/services"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,10 +16,10 @@ type CredentialController interface {
 }
 
 type CredentialControllerImpl struct {
-	CredentialService CredentialService.CredentialService
+	CredentialService services.CredentialService
 }
 
-func CreateCredentialRoutes(Credential CredentialService.CredentialService) CredentialController {
+func CreateCredentialRoutes(Credential services.CredentialService) CredentialController {
 	return &CredentialControllerImpl{Credential}
 }
 

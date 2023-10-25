@@ -2,8 +2,8 @@ package services
 
 import (
 	"errors"
-	"villa_go/entities/models"
 	"villa_go/exceptions"
+	"villa_go/models/schemas"
 	"villa_go/payloads/request"
 	"villa_go/payloads/response"
 	"villa_go/repositories"
@@ -67,9 +67,9 @@ func (v *VillaServiceImpl) DeleteDataVilla(id uuid.UUID) (bool, error) {
 
 func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*response.VillaListResponse, []exceptions.ValidationMessage, error) {
 
-	var VillaReq models.Villa
+	var VillaReq schemas.Villa
 
-	VillaReq = models.Villa{
+	VillaReq = schemas.Villa{
 		Name:            requestData.Name,
 		Slug:            slug.Make(requestData.Name),
 		Description:     requestData.Description,

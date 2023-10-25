@@ -1,7 +1,7 @@
-package userresponse
+package response
 
 import (
-	"villa_go/entities/models"
+	"villa_go/models/entities"
 
 	"github.com/golang-jwt/jwt/v4"
 	uuid "github.com/satori/go.uuid"
@@ -27,7 +27,7 @@ type RegisterResponse struct {
 	Address    string `json:"address,omitempty"`
 }
 
-func (user *RegisterResponse) GetRegisterResponse(User models.Users) {
+func (user *RegisterResponse) GetRegisterResponse(User entities.Users) {
 	user.Username = User.Credential.Username
 	user.First_name = User.First_name
 	user.Last_name = User.Last_name

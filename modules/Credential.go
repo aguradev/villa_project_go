@@ -1,9 +1,9 @@
-package domain
+package modules
 
 import (
-	"villa_go/controllers"
-	repositories "villa_go/repositories/Credentials"
-	services "villa_go/services/Credentials"
+	"villa_go/handlers"
+	"villa_go/repositories"
+	"villa_go/services"
 
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -14,7 +14,7 @@ import (
 func BindingDependencyCredentials(db *gorm.DB, route *echo.Group, validate *validator.Validate, trans ut.Translator) {
 	CredentialRepository := repositories.NewCredentialRepository(db)
 	CredentialService := services.CreateCredentialServiceImplement(CredentialRepository, validate, trans)
-	CredentialController := controllers.CreateCredentialRoutes(CredentialService)
+	CredentialController := handlers.CreateCredentialRoutes(CredentialService)
 
 	route.POST("/register", CredentialController.RegisterUser)
 	route.POST("/auth", CredentialController.AuthenticationUser)
