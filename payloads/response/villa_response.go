@@ -7,6 +7,7 @@ import (
 )
 
 type VillaListResponse struct {
+	Id              string                 `json:"id ,omitempty"`
 	Name            string                 `json:"name"`
 	Slug            string                 `json:"slug"`
 	Description     string                 `json:"description,omitempty"`
@@ -55,6 +56,7 @@ func (v *VillaListResponse) SetVillaDetailResponse(villa models.Villa) {
 		setPrice = 0
 	}
 
+	v.Id = villa.Id.String()
 	v.Name = villa.Name
 	v.Description = villa.Description
 	v.Address = villa.Address
@@ -64,8 +66,11 @@ func (v *VillaListResponse) SetVillaDetailResponse(villa models.Villa) {
 	v.Check_in = &villa.Check_in
 	v.Check_out = &villa.Check_out
 	v.Status = villa.Status
-	v.Location = &VillaLocationResponse{
-		Id:   villa.Location.Id.String(),
-		Name: villa.Location.Name,
+
+	if villa.Location != nil {
+		v.Location = &VillaLocationResponse{
+			Id:   villa.Location.Id.String(),
+			Name: villa.Location.Name,
+		}
 	}
 }

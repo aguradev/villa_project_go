@@ -48,7 +48,7 @@ func (v *VillaControllerImpl) VillaDetailHandler(ctx echo.Context) error {
 		return exceptions.NotFoundException(ctx, "Villa not found")
 	}
 
-	return response.HandleSuccess(ctx, GetVillaDetail, "Get Villa Detail", http.StatusOK)
+	return response.HandleSuccess(ctx, GetVillaDetail, "Get Villa detail", http.StatusOK)
 
 }
 
