@@ -28,5 +28,5 @@ func Database() *gorm.DB {
 }
 
 func Migration(db *gorm.DB) {
-	db.AutoMigrate(schemas.Users{}, schemas.Credentials{}, schemas.Roles{}, schemas.Villa{}, schemas.VillaLocation{})
+	db.AutoMigrate(schemas.Users{}, schemas.Credentials{}, schemas.Roles{}, schemas.Villa{}, schemas.VillaLocation{}, schemas.ReservationDetail{}, schemas.Reservation{})
 }
