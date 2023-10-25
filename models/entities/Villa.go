@@ -9,7 +9,7 @@ import (
 )
 
 type Villa struct {
-	Id              uuid.UUID
+	Id              uuid.UUID `gorm:"default:uuid_generate_v4()"`
 	Location_id     *uuid.UUID
 	Location        *VillaLocation
 	Name            string

@@ -9,7 +9,7 @@ import (
 )
 
 type Users struct {
-	Id              uuid.UUID
+	Id              uuid.UUID `gorm:"default:uuid_generate_v4()"`
 	Credential_id   uuid.UUID
 	Credential      *Credentials
 	First_name      string

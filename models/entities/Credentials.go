@@ -8,7 +8,7 @@ import (
 )
 
 type Credentials struct {
-	Id        uuid.UUID
+	Id        uuid.UUID `gorm:"default:uuid_generate_v4()"`
 	Roles_id  uuid.UUID
 	Roles     *Roles
 	Username  string

@@ -8,7 +8,7 @@ import (
 )
 
 type Roles struct {
-	Id        uuid.UUID
+	Id        uuid.UUID `gorm:"default:uuid_generate_v4()"`
 	Role      string
 	CreatedAt time.Time
 	UpdatedAt time.Time

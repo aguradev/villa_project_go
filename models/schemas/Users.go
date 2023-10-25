@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"time"
-	"villa_go/payloads/request"
 
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
@@ -20,17 +19,4 @@ type Users struct {
 	CreatedAt       time.Time      `json:"created_at,omitempty" gorm:"autoCreateTime"`
 	UpdatedAt       time.Time      `json:"updated_at,omitempty" gorm:"autoUpdateTime:milli"`
 	DeletedAt       gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
-}
-
-func (user *Users) RegisterUser(userRequest request.UserRequest, credentialRequest request.CredentialRequest) {
-	user.First_name = userRequest.First_name
-	user.Last_name = userRequest.Last_name
-	user.Email = userRequest.Email
-	user.Address = userRequest.Address
-	user.Credential = &Credentials{
-		Username: credentialRequest.Username,
-		Password: credentialRequest.Password,
-		Roles_id: uuid.UUID(credentialRequest.Roles_id),
-	}
-
 }

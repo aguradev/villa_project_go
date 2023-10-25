@@ -8,7 +8,7 @@ import (
 )
 
 type VillaLocation struct {
-	Id        uuid.UUID
+	Id        uuid.UUID `gorm:"default:uuid_generate_v4()"`
 	Name      string
 	CreatedAt time.Time
 	UpdatedAt time.Time
