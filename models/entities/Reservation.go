@@ -28,7 +28,7 @@ func (r *Reservation) GetReservationRequest(request request.ReservationRequest, 
 	r.Transaction_date = time.Now().Local()
 	r.Reservation_detail = &ReservationDetail{
 		Villa_id: VillaId,
-		Tax:      decimal.NewFromInt(10000),
+		Tax:      decimal.NewFromInt(50000),
 	}
 	r.Reservation_detail.Total = r.Reservation_detail.Tax.Add(price_per_day)
 

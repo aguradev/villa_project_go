@@ -21,7 +21,7 @@ func InitPaymentENV() *PaymentGatewayConfig {
 
 	viper.SetConfigName("")
 
-	PaymentClientKey := viper.UnmarshalKey("payment.CLIENT_KEY", &payment.MidtransClientKey)
+	PaymentClientKey := viper.UnmarshalKey("payment.SERVER_KEY", &payment.MidtransClientKey)
 
 	if PaymentClientKey != nil {
 		panic(PaymentClientKey)

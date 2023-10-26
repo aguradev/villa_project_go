@@ -27,4 +27,5 @@ func BindingDependencyReservation(db *gorm.DB, route *echo.Group, validate *vali
 	ReservationHandler := handlers.NewReservationHandler(ReservationService)
 
 	route.POST("/reservation", ReservationHandler.CreateReservationHandler, middlewares.AccessbilityRole("User"))
+	route.POST("/reservation/callback", ReservationHandler.NotificationReservationHandler)
 }

@@ -1,8 +1,11 @@
 package handlers
 
 import (
+	"fmt"
+	"net/http"
 	"villa_go/exceptions"
 	"villa_go/payloads/request"
+	"villa_go/payloads/response"
 	"villa_go/services"
 
 	"github.com/labstack/echo/v4"
@@ -10,6 +13,7 @@ import (
 
 type ReservationHandler interface {
 	CreateReservationHandler(ctx echo.Context) error
+	NotificationReservationHandler(ctx echo.Context) error
 }
 
 type ReservationHandlerImpl struct {
@@ -32,11 +36,26 @@ func (r *ReservationHandlerImpl) CreateReservationHandler(ctx echo.Context) erro
 		return exceptions.BadRequestException(ctx, BindingRequest.Error())
 	}
 
-	ReservationException := r.ReservationService.CreateNewReservation(ctx, Request)
+	ReservationResponse, ReservationException := r.ReservationService.CreateNewReservation(ctx, Request)
 
 	if ReservationException != nil {
 		return exceptions.AppException(ctx, ReservationException.Error())
 	}
+
+	return response.HandleSuccess(ctx, ReservationResponse, "Reservation Created, Finish Your Payment Transaction", http.StatusCreated)
+}
+
+func (r *ReservationHandlerImpl) NotificationReservationHandler(ctx echo.Context) error {
+
+	var NotificationPayment map[string]interface{}
+
+	BindingNotification := ctx.Bind(&NotificationPayment)
+
+	if BindingNotification != nil {
+		return exceptions.AppException(ctx, BindingNotification.Error())
+	}
+
+	fmt.Println(NotificationPayment)
 
 	return nil
 }

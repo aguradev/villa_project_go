@@ -9,7 +9,7 @@ import (
 type VillaListResponse struct {
 	Id              string                 `json:"id ,omitempty"`
 	Name            string                 `json:"name"`
-	Slug            string                 `json:"slug"`
+	Slug            string                 `json:"slug,omitempty"`
 	Description     string                 `json:"description,omitempty"`
 	Address         string                 `json:"address,omitempty"`
 	Max_capacity    uint                   `json:"max_capacity,omitempty"`
