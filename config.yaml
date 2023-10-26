@@ -9,3 +9,5 @@ db:
   DB_PASS:  ""
   DB_PORT:  5432
   DB_NAME:  "villa_db"
+payment:
+  CLIENT_KEY: "SB-Mid-client-ZQu-SJ7CnsFYe0wH"

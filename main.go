@@ -11,6 +11,5 @@ func main() {
 	db := config.Database()
 
 	config.Migration(db)
-
 	routes.ApiRoutes(db)
 }
