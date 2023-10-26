@@ -19,6 +19,7 @@ func AccessbilityRole(role string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			Payloaduser := c.Get("user").(*jwt.Token)
+
 			Claims, ok := Payloaduser.Claims.(jwt.MapClaims)
 
 			if !ok {

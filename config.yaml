@@ -9,3 +9,5 @@ db:
   DB_PASS:  ""
   DB_PORT:  5432
   DB_NAME:  "villa_db"
+payment:
+  SERVER_KEY: "SB-Mid-server-3z6SLqLI6vuJALQUVR7M7B_d"

@@ -1,7 +1,6 @@
-running-dev:
+dev-serve:
 	@nodemon -x go run main.go
 dev:
 	@go run main.go
-	
 build:
 	@go build -o main

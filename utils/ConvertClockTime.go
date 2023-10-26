@@ -17,16 +17,16 @@ const (
 	AbbrTextDate = "Jan 2 Mon"
 )
 
-func ConvertClockTime(setTime string) time.Time {
+func ConvertClockTime(setTime string) *time.Time {
 
 	loc := time.Local
 
 	value, err := time.ParseInLocation(HHMMSS24h, setTime, loc)
 
 	if err != nil {
-		return time.Time{}
+		return nil
 	}
 
-	return value
+	return &value
 
 }
