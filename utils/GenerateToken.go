@@ -15,7 +15,7 @@ func GenerateToken(User entities.Users, ctx echo.Context) (*resources.AuthToken,
 	var Auth resources.AuthToken
 	var Payload resources.JWTProfile
 
-	Payload.Id = User.Credential_id
+	Payload.Id = *User.Id
 	Payload.Username = User.Credential.Username
 	Payload.Roles = User.Credential.Roles.Role
 	Payload.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * 48))

@@ -17,7 +17,6 @@ type MidtransServiceImpl struct {
 }
 
 func NewMidtransServiceImpl(midtransConfig *config.PaymentGatewayConfig) MidtransService {
-
 	var setClient snap.Client
 
 	enviroment := midtrans.Sandbox

@@ -12,6 +12,7 @@ import (
 
 type VillaRepository interface {
 	GetAllVilla() ([]resources.VillaListResponse, error)
+	CheckVillaIsExists(uuid.UUID) (*entities.Villa, error)
 	GetVillaBySlug(slug string) (*resources.VillaListResponse, error)
 	CreateVilla(entities.Villa) (*resources.VillaListResponse, error)
 	DeleteVilla(uuid.UUID) (bool, error)
@@ -96,4 +97,16 @@ func (v *VillaRepositoryImpl) DeleteVilla(id uuid.UUID) (bool, error) {
 
 func (v *VillaRepositoryImpl) UpdateVilla(request request.VillaRequest, id uuid.UUID) (bool, error) {
 	return false, nil
+}
+
+func (v *VillaRepositoryImpl) CheckVillaIsExists(id uuid.UUID) (*entities.Villa, error) {
+
+	var items entities.Villa
+
+	if CheckIsExist := v.db.Table("properties_villa").First(&items, "id = ?", id); CheckIsExist.Error != nil {
+		return nil, errors.New("Villa not found")
+	}
+
+	return &items, nil
+
 }

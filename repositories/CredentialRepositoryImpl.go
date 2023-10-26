@@ -7,6 +7,9 @@ import (
 	"villa_go/payloads/resources"
 	"villa_go/utils"
 
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
+	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
 
@@ -14,6 +17,7 @@ type CredentialRepository interface {
 	GetRoleUserForRegister(role string) (entities.Roles, error)
 	CheckAuthCredential(request.AuthRequest) (*entities.Users, bool, error)
 	RegisterUserCredential(entities.Users) (*resources.RegisterResponse, error)
+	UserLoginProfile(echo.Context) (*entities.Users, error)
 }
 
 type CredentialRepositoryImplement struct {
@@ -82,4 +86,29 @@ func (account *CredentialRepositoryImplement) CheckAuthCredential(request reques
 	}
 
 	return &User, true, nil
+}
+
+func (account *CredentialRepositoryImplement) UserLoginProfile(ctx echo.Context) (*entities.Users, error) {
+
+	var GetUser entities.Users
+
+	PayloadUser := ctx.Get("user").(*jwt.Token)
+	Claims, ok := PayloadUser.Claims.(jwt.MapClaims)
+
+	if !ok {
+		return nil, errors.New("Token invalid")
+	}
+
+	Id, IdException := uuid.FromString(Claims["id"].(string))
+
+	if IdException != nil {
+		return nil, errors.New("Invalid id")
+	}
+
+	if QueryUserException := account.Db.First(&GetUser, "id = ?", Id); QueryUserException.Error != nil {
+		return nil, errors.New("User not found")
+	}
+
+	return &GetUser, nil
+
 }

@@ -14,7 +14,6 @@ type ReservationDetail struct {
 	Villa     *Villa
 	Tax       decimal.Decimal
 	Total     decimal.Decimal
-	Amount    decimal.Decimal
 	SnapURL   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
