@@ -9,13 +9,15 @@ import (
 )
 
 type ReservationDetail struct {
-	Id        uuid.UUID `gorm:"default:uuid_generate_v4()"`
-	Villa_id  *uuid.UUID
-	Villa     *Villa
-	Tax       decimal.Decimal
-	Total     decimal.Decimal
-	SnapURL   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	Id            uuid.UUID `gorm:"default:uuid_generate_v4()"`
+	Villa_id      *uuid.UUID
+	Villa         *Villa
+	Check_in_date *time.Time
+	Tax           decimal.Decimal
+	Total         decimal.Decimal
+	Guest_count   uint
+	SnapURL       string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     gorm.DeletedAt
 }

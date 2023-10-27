@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func BindingDependencyReservation(db *gorm.DB, route *echo.Group, validate *validator.Validate, trans ut.Translator) {
+func BindingDependencyReservation(db *gorm.DB, api *echo.Group, route *echo.Group, validate *validator.Validate, trans ut.Translator) {
 
 	VillaRepo := repositories.NewVillaRepositoryImplement(db)
 	ReservationRepo := repositories.NewReservationRepositoryImpl(db)
@@ -21,11 +21,11 @@ func BindingDependencyReservation(db *gorm.DB, route *echo.Group, validate *vali
 
 	MidtransConfig := config.InitPaymentENV()
 
-	MidtransService := services.NewMidtransServiceImpl(MidtransConfig)
+	MidtransService := services.NewMidtransServiceImpl(MidtransConfig, ReservationRepo)
 	ReservationService := services.NewReservationServiceImplement(ReservationRepo, MidtransService, VillaRepo, CredentialRepo)
 
-	ReservationHandler := handlers.NewReservationHandler(ReservationService)
+	ReservationHandler := handlers.NewReservationHandler(ReservationService, MidtransService)
 
 	route.POST("/reservation", ReservationHandler.CreateReservationHandler, middlewares.AccessbilityRole("User"))
-	route.POST("/reservation/callback", ReservationHandler.NotificationReservationHandler)
+	api.POST("/reservation/callback", ReservationHandler.NotificationReservationHandler)
 }
