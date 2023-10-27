@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"time"
 	"villa_go/models/entities"
 	"villa_go/payloads/request"
 	"villa_go/payloads/resources"
@@ -31,7 +32,7 @@ func NewReservationServiceImplement(reservation repositories.ReservationReposito
 	}
 }
 
-func (r *ReservationServiceImpl) CreateNewReservation(ctx echo.Context, request request.ReservationRequest) (*resources.ReservationResource, error) {
+func (r *ReservationServiceImpl) CreateNewReservation(ctx echo.Context, reservationRequest request.ReservationRequest) (*resources.ReservationResource, error) {
 
 	var Reservation entities.Reservation
 
@@ -41,10 +42,16 @@ func (r *ReservationServiceImpl) CreateNewReservation(ctx echo.Context, request 
 		return nil, UserException
 	}
 
-	VillaId, IdVillaException := uuid.FromString(request.Villa_id)
+	VillaId, IdVillaException := uuid.FromString(reservationRequest.Villa_id)
 
 	if IdVillaException != nil {
 		return nil, errors.New("wrong uuid format")
+	}
+
+	CheckInParsing, TimeErr := time.ParseInLocation("2006-01-02", reservationRequest.Check_in_date, time.Local)
+
+	if TimeErr != nil {
+		return nil, errors.New("Wrong check in date format")
 	}
 
 	GetDataVilla, IsExist := r.VillaRepo.CheckVillaIsExists(VillaId)
@@ -53,21 +60,25 @@ func (r *ReservationServiceImpl) CreateNewReservation(ctx echo.Context, request 
 		return nil, errors.New("Villa does not exists")
 	}
 
-	Reservation.GetReservationRequest(request, *GetDataVilla.Price_per_night, GetUserAccess.Id, GetDataVilla.Id)
-	GenerateTransactionURL, TransactionErr := r.MidtransService.GenerateSnapURL(ctx, *GetDataVilla, *GetUserAccess, Reservation.Reservation_detail.Total)
-
-	if TransactionErr != nil {
-		return nil, TransactionErr
-	}
-
-	Reservation.Reservation_detail.SnapURL = GenerateTransactionURL.RedirectURL
+	Reservation.GetReservationRequest(reservationRequest, *GetDataVilla.Price_per_night, GetUserAccess.Id, GetDataVilla.Id, &CheckInParsing)
 	CreateReservation, CreateException := r.ReservationRepo.CreateNewReservation(Reservation)
 
 	if CreateException != nil {
 		return nil, CreateException
 	}
 
-	GetReservationData, QueryException := r.ReservationRepo.GetReservationById(*CreateReservation.Id)
+	GenerateTransactionURL, TransactionErr := r.MidtransService.GenerateSnapURL(ctx, *GetDataVilla, *GetUserAccess, *CreateReservation)
+
+	if TransactionErr != nil {
+		return nil, TransactionErr
+	}
+
+	SetUpdateRequestReservation := request.ReservationRequest{}
+	SetUpdateRequestReservation.ReservationDetail = &request.ReservationDetailRequest{
+		SnapURL: GenerateTransactionURL.RedirectURL,
+	}
+
+	GetReservationData, QueryException := r.ReservationRepo.UpdateSnapUrlReservation(*CreateReservation.Id, SetUpdateRequestReservation)
 
 	if QueryException != nil {
 		return nil, errors.New("Reservation data not found")

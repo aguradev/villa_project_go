@@ -18,11 +18,13 @@ type ReservationHandler interface {
 
 type ReservationHandlerImpl struct {
 	ReservationService services.ReservationService
+	MidtransService    services.MidtransService
 }
 
-func NewReservationHandler(reservation services.ReservationService) ReservationHandler {
+func NewReservationHandler(reservation services.ReservationService, midtrans services.MidtransService) ReservationHandler {
 	return &ReservationHandlerImpl{
 		ReservationService: reservation,
+		MidtransService:    midtrans,
 	}
 }
 
@@ -55,7 +57,15 @@ func (r *ReservationHandlerImpl) NotificationReservationHandler(ctx echo.Context
 		return exceptions.AppException(ctx, BindingNotification.Error())
 	}
 
-	fmt.Println(NotificationPayment)
+	NotificationBool, NotificationMessage, ErrResponse := r.MidtransService.NotificationPayment(NotificationPayment)
+	if !NotificationBool {
 
-	return nil
+		fmt.Println("Error : ", ErrResponse)
+
+		return ctx.JSON(http.StatusInternalServerError, ErrResponse)
+	}
+
+	fmt.Println("Notification :", NotificationMessage)
+
+	return ctx.String(http.StatusCreated, NotificationMessage)
 }

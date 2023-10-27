@@ -29,11 +29,16 @@ func NewVillaLocationRepositoryImplement(Db *gorm.DB) VillaLocationRepository {
 
 func (l *VillaLocationRepositoryImpl) CreateNewLocation(location schemas.VillaLocation) (*schemas.VillaLocation, error) {
 
-	QueryException := l.db.Table("location").Create(&location)
+	Transaction := l.db.Begin()
+
+	QueryException := Transaction.Table("location").Create(&location)
 
 	if QueryException.Error != nil {
+		Transaction.Rollback()
 		return nil, errors.New("Error when create location")
 	}
+
+	Transaction.Commit()
 
 	return &location, nil
 
