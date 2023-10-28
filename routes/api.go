@@ -18,7 +18,7 @@ func ApiRoutes(db *gorm.DB) {
 
 	api := e.Group("/api", middlewares.LoggerAccess())
 
-	verifyJWT := api.Group("", middlewares.VerifyTokenSignature())
+	verifyJWT := api.Group("", middlewares.VerifiyTokenByCookie())
 
 	modules.BindingDependencyCredentials(db, api, validate, trans)
 	modules.BindingDepedencyVilla(db, verifyJWT, validate, trans)
