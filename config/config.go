@@ -1,6 +1,12 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+)
+
+type AuthConfig struct {
+	SecretKey []byte
+}
 
 type PaymentGatewayConfig struct {
 	MidtransClientKey string
@@ -28,4 +34,14 @@ func InitPaymentENV() *PaymentGatewayConfig {
 	}
 
 	return payment
+}
+
+func InitAuthConfig() *AuthConfig {
+
+	AuthConfig := &AuthConfig{}
+
+	AuthConfig.SecretKey = []byte(viper.GetString("SECRET_KEY"))
+
+	return AuthConfig
+
 }
