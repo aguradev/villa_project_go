@@ -8,7 +8,7 @@ import (
 
 type VillaListResponse struct {
 	Id              string                 `json:"id ,omitempty"`
-	Name            string                 `json:"name"`
+	Name            string                 `json:"name,omitempty"`
 	Slug            string                 `json:"slug,omitempty"`
 	Description     string                 `json:"description,omitempty"`
 	Address         string                 `json:"address,omitempty"`
@@ -16,7 +16,7 @@ type VillaListResponse struct {
 	Price_per_night int                    `json:"price_per_night,omitempty"`
 	Check_in        *time.Time             `json:"check_in,omitempty"`
 	Check_out       *time.Time             `json:"check_out,omitempty"`
-	Status          string                 `json:"status"`
+	Status          string                 `json:"status,omitempty"`
 	Location        *VillaLocationResponse `json:"location,omitempty"`
 }
 

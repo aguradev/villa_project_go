@@ -15,11 +15,12 @@ type ReservationResource struct {
 }
 
 type ReservationDetailResource struct {
-	Id      string             `json:"id,omitempty"`
-	Villa   *VillaListResponse `json:"villa,omitempty"`
-	Tax     int                `json:"tax,omitempty"`
-	Total   int                `json:"total,omitempty"`
-	SnapURL string             `json:"transaction_url,omitempty"`
+	Id            string             `json:"id,omitempty"`
+	Check_in_date *time.Time         `json:"check_in_date, omitempty"`
+	Villa         *VillaListResponse `json:"villa,omitempty"`
+	Tax           int                `json:"tax,omitempty"`
+	Total         int                `json:"total,omitempty"`
+	SnapURL       string             `json:"transaction_url,omitempty"`
 }
 
 func (r *ReservationResource) GetDetailReservationResponse(reservation entities.Reservation) {
@@ -51,4 +52,33 @@ func (r *ReservationResource) GetDetailReservationResponse(reservation entities.
 		Total:   SetTotal,
 		SnapURL: reservation.Reservation_detail.SnapURL,
 	}
+}
+
+func GetListReservationResponse(reservations []entities.Reservation) []ReservationResource {
+
+	var ReservationResponse []ReservationResource
+
+	for _, ResVal := range reservations {
+
+		Reservation := ReservationResource{
+			Transaction_date: &ResVal.Transaction_date,
+			Status:           ResVal.Status,
+			User: &UserResource{
+				First_name: ResVal.User.First_name,
+				Last_name:  ResVal.User.Last_name,
+			},
+			Reservation_detail: &ReservationDetailResource{
+				Check_in_date: ResVal.Reservation_detail.Check_in_date,
+				Villa: &VillaListResponse{
+					Name: ResVal.Reservation_detail.Villa.Name,
+				},
+			},
+		}
+
+		ReservationResponse = append(ReservationResponse, Reservation)
+
+	}
+
+	return ReservationResponse
+
 }

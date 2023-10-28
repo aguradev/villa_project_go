@@ -12,8 +12,9 @@ import (
 )
 
 type ReservationHandler interface {
-	CreateReservationHandler(ctx echo.Context) error
-	NotificationReservationHandler(ctx echo.Context) error
+	GetAllReservationHandler(echo.Context) error
+	CreateReservationHandler(echo.Context) error
+	NotificationReservationHandler(echo.Context) error
 }
 
 type ReservationHandlerImpl struct {
@@ -26,6 +27,18 @@ func NewReservationHandler(reservation services.ReservationService, midtrans ser
 		ReservationService: reservation,
 		MidtransService:    midtrans,
 	}
+}
+
+func (r *ReservationHandlerImpl) GetAllReservationHandler(ctx echo.Context) error {
+
+	GetListReservations, ErrMessage := r.ReservationService.GetListReservation()
+
+	if ErrMessage != nil {
+		return exceptions.NotFoundException(ctx, ErrMessage.Error())
+	}
+
+	return response.HandleSuccess(ctx, GetListReservations, "Success get list reservation", http.StatusOK)
+
 }
 
 func (r *ReservationHandlerImpl) CreateReservationHandler(ctx echo.Context) error {

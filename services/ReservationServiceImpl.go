@@ -13,6 +13,7 @@ import (
 )
 
 type ReservationService interface {
+	GetListReservation() ([]resources.ReservationResource, error)
 	CreateNewReservation(echo.Context, request.ReservationRequest) (*resources.ReservationResource, error)
 }
 
@@ -30,6 +31,18 @@ func NewReservationServiceImplement(reservation repositories.ReservationReposito
 		VillaRepo:       villa,
 		CredentialRepo:  credential,
 	}
+}
+
+func (r *ReservationServiceImpl) GetListReservation() ([]resources.ReservationResource, error) {
+
+	ListsReservations, ListResErr := r.ReservationRepo.GetListReservation()
+
+	if ListResErr != nil {
+		return nil, ListResErr
+	}
+
+	return ListsReservations, nil
+
 }
 
 func (r *ReservationServiceImpl) CreateNewReservation(ctx echo.Context, reservationRequest request.ReservationRequest) (*resources.ReservationResource, error) {
