@@ -17,7 +17,8 @@ func BindingDepedencyVillaLocation(db *gorm.DB, route *echo.Group, validate *val
 	LocationService := services.NewVillaLocationServiceImplement(LocationRepo, *validate, trans)
 	LocationHandler := handlers.NewLocationHandlerImpl(LocationService)
 
-	route.Use(middlewares.AccessbilityRole("Admin"))
-	route.GET("/location", LocationHandler.ListsLocationHandler)
-	route.POST("/location", LocationHandler.CreateNewLocationHandler)
+	AdminAccess := route.Group("", middlewares.AccessbilityRole("Admin"))
+
+	AdminAccess.GET("/location", LocationHandler.ListsLocationHandler)
+	AdminAccess.POST("/location", LocationHandler.CreateNewLocationHandler)
 }

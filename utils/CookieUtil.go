@@ -4,8 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"strings"
-	"time"
-	"villa_go/exceptions"
 	"villa_go/payloads/resources"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -13,12 +11,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-func SetTokenCookie(ctx echo.Context, tokenJWT string, expired *jwt.NumericDate) {
+func SetTokenCookie(ctx echo.Context, tokenJWT string) {
 
 	SetCookieToken := &http.Cookie{
 		Name:     "token",
 		Value:    tokenJWT,
-		Expires:  expired.Time,
 		Path:     "/",
 		HttpOnly: true,
 	}
@@ -29,12 +26,14 @@ func SetTokenCookie(ctx echo.Context, tokenJWT string, expired *jwt.NumericDate)
 
 func DeleteTokenCookie(ctx echo.Context) {
 
-	cookie := new(http.Cookie)
-	cookie.Name = "token"
-	cookie.Value = ""
-	cookie.Expires = time.Now()
+	SetCookieToken := &http.Cookie{
+		Name:     "token",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+	}
 
-	ctx.SetCookie(cookie)
+	ctx.SetCookie(SetCookieToken)
 
 }
 
@@ -42,7 +41,7 @@ func CheckCookieSignatured(ctx echo.Context) (*jwt.Token, *resources.JWTProfile,
 	GetCookie, ErrCookie := ctx.Cookie("token")
 
 	if ErrCookie != nil {
-		return nil, nil, false, echo.NewHTTPError(http.StatusUnauthorized, exceptions.AuthorizationException(ctx, "No cookies is set"))
+		return nil, nil, false, errors.New("unauthroized")
 	}
 
 	TokenString := GetCookie.Value
@@ -52,8 +51,17 @@ func CheckCookieSignatured(ctx echo.Context) (*jwt.Token, *resources.JWTProfile,
 		return nil, nil, false, errors.New("Invalid or missing Bearer token in Authorization header")
 	}
 
-	if GetTokenAuthorization != "Bearer "+TokenString {
-		return nil, nil, false, errors.New("Token in Authorization invalid")
+	if GetTokenAuthorization[7:] != TokenString {
+		// AnotherTokenAvailable, TokenClaim, ErrReplace := ParsingJWTFromAuthorizationHeader(ctx)
+
+		// if ErrReplace != nil {
+		// 	return nil, nil, false, ErrReplace
+		// }
+
+		// DeleteTokenCookie(ctx)
+		// SetTokenCookie(ctx, GetTokenAuthorization[7:], TokenClaim.ExpiresAt)
+
+		return nil, nil, false, errors.New("Token access dosent match")
 	}
 
 	JwtClaims := &resources.JWTProfile{}

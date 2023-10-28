@@ -6,6 +6,7 @@ import (
 	"villa_go/payloads/request"
 	"villa_go/payloads/response"
 	"villa_go/services"
+	"villa_go/utils"
 
 	"github.com/labstack/echo/v4"
 )
@@ -13,6 +14,7 @@ import (
 type CredentialController interface {
 	RegisterUser(echo.Context) error
 	AuthenticationUser(echo.Context) error
+	LogoutUser(echo.Context) error
 }
 
 type CredentialControllerImpl struct {
@@ -59,4 +61,18 @@ func (Credential *CredentialControllerImpl) AuthenticationUser(ctx echo.Context)
 	}
 
 	return response.HandleSuccess(ctx, GetAuthResponse, "User Authentication Success", http.StatusOK)
+}
+
+func (Credential *CredentialControllerImpl) LogoutUser(ctx echo.Context) error {
+
+	_, CookieErr := ctx.Cookie("token")
+
+	if CookieErr != nil {
+		return exceptions.AuthorizationException(ctx, "Unauthorized")
+	}
+
+	utils.DeleteTokenCookie(ctx)
+
+	return response.HandleSuccess(ctx, nil, "Logout successfully", http.StatusCreated)
+
 }

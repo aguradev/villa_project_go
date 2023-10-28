@@ -2,6 +2,7 @@ package modules
 
 import (
 	"villa_go/handlers"
+	"villa_go/middlewares"
 	"villa_go/repositories"
 	"villa_go/services"
 
@@ -15,7 +16,10 @@ func BindingDependencyCredentials(db *gorm.DB, route *echo.Group, validate *vali
 	CredentialRepository := repositories.NewCredentialRepository(db)
 	CredentialService := services.CreateCredentialServiceImplement(CredentialRepository, validate, trans)
 	CredentialController := handlers.CreateCredentialRoutes(CredentialService)
+	VerifyCredential := route.Group("", middlewares.VerifiyTokenByCookie())
 
 	route.POST("/register", CredentialController.RegisterUser)
 	route.POST("/auth", CredentialController.AuthenticationUser)
+
+	VerifyCredential.POST("/logout", CredentialController.LogoutUser)
 }
