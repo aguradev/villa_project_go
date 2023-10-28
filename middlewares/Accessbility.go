@@ -2,9 +2,11 @@ package middlewares
 
 import (
 	"villa_go/exceptions"
+	"villa_go/payloads/resources"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 )
 
 type Roles string
@@ -18,15 +20,29 @@ func AccessbilityRole(role string) echo.MiddlewareFunc {
 
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			Payloaduser := c.Get("user").(*jwt.Token)
+			TokenCookie, ErrCookie := c.Cookie("token")
 
-			Claims, ok := Payloaduser.Claims.(jwt.MapClaims)
-
-			if !ok {
-				return exceptions.AuthorizationException(c, "Token Invalid")
+			if ErrCookie != nil {
+				return exceptions.AuthorizationException(c, "Unauthorized")
 			}
 
-			Roles := Claims["role"].(string)
+			TokenVal := TokenCookie.Value
+
+			Claims := &resources.JWTProfile{}
+
+			TokenClaims, ErrClaims := jwt.ParseWithClaims(TokenVal, Claims, func(t *jwt.Token) (interface{}, error) {
+				return []byte(viper.GetString("SECRET_KEY")), nil
+			})
+
+			if ErrClaims != nil {
+				return exceptions.AuthorizationException(c, "Unauthorized, token invalid or expired")
+			}
+
+			if !TokenClaims.Valid {
+				return exceptions.AuthorizationException(c, "Token invalid")
+			}
+
+			Roles := Claims.Roles
 
 			switch role {
 			case "Admin":
