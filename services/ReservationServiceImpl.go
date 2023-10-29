@@ -61,9 +61,14 @@ func (r *ReservationServiceImpl) CreateNewReservation(ctx echo.Context, reservat
 		return nil, errors.New("wrong uuid format")
 	}
 
-	CheckInParsing, TimeErr := time.ParseInLocation("2006-01-02", reservationRequest.Check_in_date, time.Local)
+	CheckInParsing, TimeInErr := time.ParseInLocation("2023-01-02", reservationRequest.Check_in_date, time.Local)
+	CheckOutParsing, TimeOutErr := time.ParseInLocation("2023-01-02", reservationRequest.Check_out_date, time.Local)
 
-	if TimeErr != nil {
+	if TimeInErr != nil {
+		return nil, errors.New("Wrong check in date format")
+	}
+
+	if TimeOutErr != nil {
 		return nil, errors.New("Wrong check in date format")
 	}
 
@@ -73,7 +78,7 @@ func (r *ReservationServiceImpl) CreateNewReservation(ctx echo.Context, reservat
 		return nil, errors.New("Villa does not exists")
 	}
 
-	Reservation.GetReservationRequest(reservationRequest, *GetDataVilla.Price_per_night, GetUserAccess.Id, GetDataVilla.Id, &CheckInParsing)
+	Reservation.GetReservationRequest(reservationRequest, *GetDataVilla.Price_per_night, GetUserAccess.Id, GetDataVilla.Id, &CheckInParsing, &CheckOutParsing)
 	CreateReservation, CreateException := r.ReservationRepo.CreateNewReservation(Reservation)
 
 	if CreateException != nil {

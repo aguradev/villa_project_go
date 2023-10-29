@@ -4,6 +4,7 @@ type ReservationRequest struct {
 	Villa_id          string                    `json:"villa_id,omitempty"`
 	Guest_count       uint                      `json:"guest_count,omitempty"`
 	Check_in_date     string                    `json:"check_in_date"`
+	Check_out_date    string                    `json:"check_out_date"`
 	ReservationDetail *ReservationDetailRequest `json:"reservation_detail,omitempty"`
 }
 
