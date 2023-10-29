@@ -51,7 +51,11 @@ func (r *ReservationHandlerImpl) CreateReservationHandler(ctx echo.Context) erro
 		return exceptions.BadRequestException(ctx, BindingRequest.Error())
 	}
 
-	ReservationResponse, ReservationException := r.ReservationService.CreateNewReservation(ctx, Request)
+	ReservationResponse, ReservationValidation, ReservationException := r.ReservationService.CreateNewReservation(ctx, Request)
+
+	if ReservationValidation != nil {
+		return exceptions.ValidationException(ctx, "One or more validation errors occurred", ReservationValidation)
+	}
 
 	if ReservationException != nil {
 		return exceptions.AppException(ctx, ReservationException.Error())

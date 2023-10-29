@@ -15,12 +15,13 @@ type ReservationResource struct {
 }
 
 type ReservationDetailResource struct {
-	Id            string             `json:"id,omitempty"`
-	Check_in_date *time.Time         `json:"check_in_date, omitempty"`
-	Villa         *VillaListResponse `json:"villa,omitempty"`
-	Tax           int                `json:"tax,omitempty"`
-	Total         int                `json:"total,omitempty"`
-	SnapURL       string             `json:"transaction_url,omitempty"`
+	Id             string             `json:"id,omitempty"`
+	Check_in_date  *time.Time         `json:"check_in_date,omitempty"`
+	Check_out_date *time.Time         `json:"check_out_date,omitempty"`
+	Villa          *VillaListResponse `json:"villa,omitempty"`
+	Tax            int                `json:"tax,omitempty"`
+	Total          int                `json:"total,omitempty"`
+	SnapURL        string             `json:"transaction_url,omitempty"`
 }
 
 func (r *ReservationResource) GetDetailReservationResponse(reservation entities.Reservation) {
@@ -39,7 +40,9 @@ func (r *ReservationResource) GetDetailReservationResponse(reservation entities.
 		Email:      reservation.User.Email,
 	}
 	r.Reservation_detail = &ReservationDetailResource{
-		Id: reservation.Reservation_detail.Id.String(),
+		Id:             reservation.Reservation_detail.Id.String(),
+		Check_in_date:  reservation.Reservation_detail.Check_in_date,
+		Check_out_date: reservation.Reservation_detail.Check_out_date,
 		Villa: &VillaListResponse{
 			Name:    reservation.Reservation_detail.Villa.Name,
 			Address: reservation.Reservation_detail.Villa.Address,
@@ -68,7 +71,8 @@ func GetListReservationResponse(reservations []entities.Reservation) []Reservati
 				Last_name:  ResVal.User.Last_name,
 			},
 			Reservation_detail: &ReservationDetailResource{
-				Check_in_date: ResVal.Reservation_detail.Check_in_date,
+				Check_in_date:  ResVal.Reservation_detail.Check_in_date,
+				Check_out_date: ResVal.Reservation_detail.Check_out_date,
 				Villa: &VillaListResponse{
 					Name: ResVal.Reservation_detail.Villa.Name,
 				},

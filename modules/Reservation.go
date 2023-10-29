@@ -21,7 +21,7 @@ func BindingDependencyReservation(db *gorm.DB, api *echo.Group, validate *valida
 	CredentialRepo := repositories.NewCredentialRepository(db)
 
 	MidtransService := services.NewMidtransServiceImpl(MidtransConfig, ReservationRepo)
-	ReservationService := services.NewReservationServiceImplement(ReservationRepo, MidtransService, VillaRepo, CredentialRepo)
+	ReservationService := services.NewReservationServiceImplement(ReservationRepo, MidtransService, VillaRepo, CredentialRepo, validate, trans)
 
 	ReservationHandler := handlers.NewReservationHandler(ReservationService, MidtransService)
 
