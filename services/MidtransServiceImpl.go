@@ -123,7 +123,7 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 					return false, "", ErrMessage
 				}
 
-				return true, "Transaction payment settlement", nil
+				return true, "Reservation transaction settlement", nil
 
 			} else if TransactionStatus == "deny" {
 				StatusUpdated, ErrMessage := p.ReservationRepo.UpdateStatusReservation(SetToUuid, TransactionStatus)
@@ -140,7 +140,7 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 					return false, "", ErrMessage
 				}
 
-				return true, TransactionStatusReps.StatusMessage, nil
+				return true, "Reservation transaction is cancel or expired", nil
 			} else if TransactionStatus == "pending" {
 				return true, TransactionStatusReps.StatusMessage, nil
 			}
