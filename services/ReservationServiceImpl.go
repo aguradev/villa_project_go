@@ -93,6 +93,10 @@ func (r *ReservationServiceImpl) CreateNewReservation(ctx echo.Context, reservat
 		return nil, nil, errors.New("Villa does not exists")
 	}
 
+	if reservationRequest.Guest_count > GetDataVilla.Max_capacity {
+		return nil, nil, errors.New("The number of guests exceeds the available villa capacity")
+	}
+
 	Reservation.GetReservationRequest(reservationRequest, *GetDataVilla.Price_per_night, GetUserAccess.Id, GetDataVilla.Id, CheckInParsing, CheckOutParsing, GetDurationDays)
 	CreateReservation, CreateException := r.ReservationRepo.CreateNewReservation(Reservation)
 

@@ -58,7 +58,7 @@ func (r *ReservationHandlerImpl) CreateReservationHandler(ctx echo.Context) erro
 	}
 
 	if ReservationException != nil {
-		return exceptions.AppException(ctx, ReservationException.Error())
+		return exceptions.BadRequestException(ctx, ReservationException.Error())
 	}
 
 	return response.HandleSuccess(ctx, ReservationResponse, "Reservation Created, Finish Your Payment Transaction", http.StatusCreated)
