@@ -36,6 +36,6 @@ func (r *Reservation) GetReservationRequest(request request.ReservationRequest, 
 		Duration_day_price: price_per_day_duration.Mul(decimal.NewFromInt(int64(day_duration))),
 		Tax:                decimal.NewFromInt(50000),
 	}
-	r.Reservation_detail.Total = r.Reservation_detail.Tax.Add(price_per_day)
+	r.Reservation_detail.Total = r.Reservation_detail.Tax.Add(price_per_day).Add(r.Reservation_detail.Duration_day_price)
 
 }
