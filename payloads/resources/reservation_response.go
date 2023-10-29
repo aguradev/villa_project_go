@@ -46,9 +46,10 @@ func (r *ReservationResource) GetDetailReservationResponse(reservation entities.
 		Check_in_date:  reservation.Reservation_detail.Check_in_date,
 		Check_out_date: reservation.Reservation_detail.Check_out_date,
 		Villa: &VillaListResponse{
-			Name:    reservation.Reservation_detail.Villa.Name,
-			Address: reservation.Reservation_detail.Villa.Address,
-			Status:  reservation.Reservation_detail.Villa.Status,
+			Name:            reservation.Reservation_detail.Villa.Name,
+			Address:         reservation.Reservation_detail.Villa.Address,
+			Price_per_night: int(reservation.Reservation_detail.Villa.Price_per_night.IntPart()),
+			Status:          reservation.Reservation_detail.Villa.Status,
 			Location: &VillaLocationResponse{
 				Name: reservation.Reservation_detail.Villa.Location.Name,
 			},
