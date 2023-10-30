@@ -12,8 +12,9 @@ import (
 )
 
 type ReservationHandler interface {
-	CreateReservationHandler(ctx echo.Context) error
-	NotificationReservationHandler(ctx echo.Context) error
+	GetAllReservationHandler(echo.Context) error
+	CreateReservationHandler(echo.Context) error
+	NotificationReservationHandler(echo.Context) error
 }
 
 type ReservationHandlerImpl struct {
@@ -28,6 +29,18 @@ func NewReservationHandler(reservation services.ReservationService, midtrans ser
 	}
 }
 
+func (r *ReservationHandlerImpl) GetAllReservationHandler(ctx echo.Context) error {
+
+	GetListReservations, ErrMessage := r.ReservationService.GetListReservation()
+
+	if ErrMessage != nil {
+		return exceptions.NotFoundException(ctx, ErrMessage.Error())
+	}
+
+	return response.HandleSuccess(ctx, GetListReservations, "Success get list reservation", http.StatusOK)
+
+}
+
 func (r *ReservationHandlerImpl) CreateReservationHandler(ctx echo.Context) error {
 
 	var Request request.ReservationRequest
@@ -38,10 +51,14 @@ func (r *ReservationHandlerImpl) CreateReservationHandler(ctx echo.Context) erro
 		return exceptions.BadRequestException(ctx, BindingRequest.Error())
 	}
 
-	ReservationResponse, ReservationException := r.ReservationService.CreateNewReservation(ctx, Request)
+	ReservationResponse, ReservationValidation, ReservationException := r.ReservationService.CreateNewReservation(ctx, Request)
+
+	if ReservationValidation != nil {
+		return exceptions.ValidationException(ctx, "One or more validation errors occurred", ReservationValidation)
+	}
 
 	if ReservationException != nil {
-		return exceptions.AppException(ctx, ReservationException.Error())
+		return exceptions.BadRequestException(ctx, ReservationException.Error())
 	}
 
 	return response.HandleSuccess(ctx, ReservationResponse, "Reservation Created, Finish Your Payment Transaction", http.StatusCreated)

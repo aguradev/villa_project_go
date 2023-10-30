@@ -37,6 +37,31 @@ func DeleteTokenCookie(ctx echo.Context) {
 
 }
 
+func ClaimToken(ctx echo.Context) (*resources.JWTProfile, error) {
+	TokenCookie, ErrCookie := ctx.Cookie("token")
+
+	if ErrCookie != nil {
+		return nil, errors.New("Unauthorized")
+	}
+
+	TokenVal := TokenCookie.Value
+	Claims := &resources.JWTProfile{}
+
+	TokenClaims, ErrClaims := jwt.ParseWithClaims(TokenVal, Claims, func(t *jwt.Token) (interface{}, error) {
+		return []byte(viper.GetString("SECRET_KEY")), nil
+	})
+
+	if ErrClaims != nil {
+		return nil, errors.New("Unauthorized, token invalid or expired")
+	}
+
+	if !TokenClaims.Valid {
+		return nil, errors.New("Token invalid")
+	}
+
+	return Claims, nil
+}
+
 func CheckCookieSignatured(ctx echo.Context) (*jwt.Token, *resources.JWTProfile, bool, error) {
 	GetCookie, ErrCookie := ctx.Cookie("token")
 
