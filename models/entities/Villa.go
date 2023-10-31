@@ -13,6 +13,7 @@ type Villa struct {
 	Location_id     *uuid.UUID
 	Location        *VillaLocation
 	Facility        []Facility `gorm:"many2many:villa_has_facility;foreignKey:Id;references:Id;"`
+	Gallery         []Gallery
 	Name            string
 	Slug            string
 	Description     string

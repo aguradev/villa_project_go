@@ -52,7 +52,7 @@ func (v *VillaRepositoryImpl) GetVillaBySlug(slug string) (*resources.VillaListR
 	var items entities.Villa
 	var LocationDetail resources.VillaListResponse
 
-	VillaRecordException := v.db.Table("properties_villa").Joins("Location").Preload("Facility").First(&items, "slug = ?", slug)
+	VillaRecordException := v.db.Table("properties_villa").Joins("Location").Preload("Facility").Preload("Gallery").First(&items, "slug = ?", slug)
 
 	if VillaRecordException.Error == gorm.ErrRecordNotFound {
 		return nil, errors.New("Villa record not found")

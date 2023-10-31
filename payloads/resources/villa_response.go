@@ -7,7 +7,7 @@ import (
 )
 
 type VillaListResponse struct {
-	Id              string                  `json:"id ,omitempty"`
+	Id              string                  `json:"id,omitempty"`
 	Name            string                  `json:"name,omitempty"`
 	Slug            string                  `json:"slug,omitempty"`
 	Description     string                  `json:"description,omitempty"`
@@ -19,6 +19,7 @@ type VillaListResponse struct {
 	Status          string                  `json:"status,omitempty"`
 	Location        *VillaLocationResponse  `json:"location,omitempty"`
 	Facility        []VillaFacilityResponse `json:"facilities,omitempty"`
+	Galleries       []GalleryResource       `json:"gallery,omitempty"`
 }
 
 func SetVillaResponse(Villa []entities.Villa) []VillaListResponse {
@@ -85,6 +86,7 @@ func (v *VillaListResponse) GetVillaFacilitiesResponse(villa entities.Villa) {
 func (v *VillaListResponse) SetVillaDetailResponse(villa entities.Villa) {
 	setPrice, err := strconv.Atoi(villa.Price_per_night.String())
 	var GetFacility []VillaFacilityResponse
+	var GetGallery []GalleryResource
 
 	if err != nil {
 		setPrice = 0
@@ -117,5 +119,14 @@ func (v *VillaListResponse) SetVillaDetailResponse(villa entities.Villa) {
 		GetFacility = append(GetFacility, Facility)
 	}
 
+	for _, gallery := range villa.Gallery {
+		Gallery := GalleryResource{
+			Id:      gallery.Id.String(),
+			Fileurl: gallery.Fileurl,
+		}
+		GetGallery = append(GetGallery, Gallery)
+	}
+
 	v.Facility = GetFacility
+	v.Galleries = GetGallery
 }
