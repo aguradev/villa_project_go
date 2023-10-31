@@ -15,6 +15,7 @@ type FacilityHandler interface {
 	GetAllFacilityHandler(echo.Context) error
 	CreateFacilityHandler(echo.Context) error
 	AddFacilityToVillaHandler(echo.Context) error
+	RemoveFacilityToVillaHandler(echo.Context) error
 }
 
 type FacilityHandlerImpl struct {
@@ -91,5 +92,36 @@ func (f *FacilityHandlerImpl) AddFacilityToVillaHandler(ctx echo.Context) error 
 	}
 
 	return response.HandleSuccess(ctx, QueryResults, "Success add facilities", http.StatusCreated)
+
+}
+
+func (f *FacilityHandlerImpl) RemoveFacilityToVillaHandler(ctx echo.Context) error {
+
+	GetVillaId := ctx.Param("villa_id")
+	var request request.FacilityToVillaRequest
+
+	ParseToUuid, UuidException := uuid.FromString(GetVillaId)
+
+	if UuidException != nil {
+		return exceptions.BadRequestException(ctx, "Invalid format uuid")
+	}
+
+	BindingErr := ctx.Bind(&request)
+
+	if BindingErr != nil {
+		return exceptions.BadRequestException(ctx, BindingErr.Error())
+	}
+
+	Deleted, ValidationErr, ErrException := f.FacilityService.RemoveFacilityToVilla(ctx, ParseToUuid, request)
+
+	if ValidationErr != nil && !Deleted {
+		return exceptions.ValidationException(ctx, "One or more validation errors occurred", ValidationErr)
+	}
+
+	if ErrException != nil && !Deleted {
+		return exceptions.AppException(ctx, ErrException.Error())
+	}
+
+	return response.HandleResponseDelete(ctx, "Facilities Removed")
 
 }

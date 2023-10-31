@@ -19,6 +19,7 @@ type VIllaFacilityService interface {
 	CreateNewFacility(request.FacilityRequest, echo.Context) ([]resources.VillaFacilityResponse, []exceptions.ValidationMessage, error)
 	GetListFacility() ([]resources.VillaFacilityResponse, error)
 	AddFacilityToVilla(echo.Context, uuid.UUID, request.FacilityToVillaRequest) (*resources.VillaListResponse, []exceptions.ValidationMessage, error)
+	RemoveFacilityToVilla(echo.Context, uuid.UUID, request.FacilityToVillaRequest) (bool, []exceptions.ValidationMessage, error)
 }
 
 type VillaFacilityServiceImpl struct {
@@ -122,5 +123,53 @@ func (f *VillaFacilityServiceImpl) AddFacilityToVilla(ctx echo.Context, villaId 
 	}
 
 	return GetVillaWithFacility, nil, nil
+
+}
+
+func (f *VillaFacilityServiceImpl) RemoveFacilityToVilla(ctx echo.Context, id uuid.UUID, requestFacility request.FacilityToVillaRequest) (bool, []exceptions.ValidationMessage, error) {
+
+	var Facilities []entities.Facility
+
+	ValidationMessage := f.Validator.Struct(ctx)
+
+	if ValidationMessage != nil {
+		return false, utils.ValidationError(ctx, f.Trans, ValidationMessage), nil
+	}
+
+	VillaData, ErrExists := f.VillaRepo.CheckVillaIsExists(id)
+
+	if ErrExists != nil {
+		return false, nil, ErrExists
+	}
+
+	if len(requestFacility.Id) == 0 {
+		return false, nil, errors.New("No id in request")
+	}
+
+	for index := range requestFacility.Id {
+
+		ParseToUuid, ErrParse := uuid.FromString(requestFacility.Id[index])
+
+		if ErrParse != nil {
+			return false, nil, errors.New("Invalid format uuid")
+		}
+
+		FacilityExists, ErrExists := f.FacilityRepo.GetFacilityById(ParseToUuid)
+
+		if ErrExists != nil {
+			return false, nil, ErrExists
+		}
+
+		Facilities = append(Facilities, *FacilityExists)
+
+	}
+
+	IsDeleted, ErrAddFacility := f.VillaRepo.RemoveFacilities(*VillaData, Facilities)
+
+	if ErrAddFacility != nil && !IsDeleted {
+		return false, nil, ErrAddFacility
+	}
+
+	return true, nil, nil
 
 }
