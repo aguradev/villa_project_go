@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"net/http"
 	"strings"
 	"villa_go/exceptions"
 	"villa_go/models/entities"
@@ -13,13 +14,14 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/gosimple/slug"
+	"github.com/labstack/echo/v4"
 	uuid "github.com/satori/go.uuid"
 )
 
 type VillaService interface {
 	VillaLists() ([]resources.VillaListResponse, error)
 	VillaDataDetail(slug string) (*resources.VillaListResponse, error)
-	CreateNewVilla(request.VillaRequest) (*resources.VillaListResponse, []exceptions.ValidationMessage, error)
+	CreateNewVilla(echo.Context, request.VillaRequest) (*resources.VillaListResponse, []exceptions.ValidationMessage, error, int)
 	DeleteDataVilla(uuid.UUID) (bool, error)
 	UpdateDataVilla(request.VillaRequest, uuid.UUID) (*resources.VillaListResponse, error)
 }
@@ -77,9 +79,15 @@ func (v *VillaServiceImpl) DeleteDataVilla(id uuid.UUID) (bool, error) {
 	return true, nil
 }
 
-func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*resources.VillaListResponse, []exceptions.ValidationMessage, error) {
+func (v *VillaServiceImpl) CreateNewVilla(ctx echo.Context, requestData request.VillaRequest) (*resources.VillaListResponse, []exceptions.ValidationMessage, error, int) {
 
 	var VillaReq entities.Villa
+
+	ValidationMessage := v.validation.Struct(requestData)
+
+	if ValidationMessage != nil {
+		return nil, utils.ValidationError(ctx, v.translate, ValidationMessage), nil, http.StatusUnprocessableEntity
+	}
 
 	VillaReq = entities.Villa{
 		Name:            requestData.Name,
@@ -93,12 +101,18 @@ func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*re
 		Status:          "available",
 	}
 
+	IsExists, ExistMessage := v.VillaRepository.CheckVillaNameExists(VillaReq.Name)
+
+	if IsExists {
+		return nil, nil, ExistMessage, http.StatusConflict
+	}
+
 	if requestData.Location_id != nil {
 
 		LocationRecord, Exists := v.LocationRepository.GetLocationById(*requestData.Location_id)
 
 		if Exists != nil {
-			return nil, nil, Exists
+			return nil, nil, Exists, http.StatusNoContent
 		}
 
 		VillaReq.Location_id = &LocationRecord.Id
@@ -107,10 +121,10 @@ func (v *VillaServiceImpl) CreateNewVilla(requestData request.VillaRequest) (*re
 	QueryCreate, QueryErrException := v.VillaRepository.CreateVilla(VillaReq)
 
 	if QueryErrException != nil {
-		return nil, nil, errors.New("Error when create new villa")
+		return nil, nil, errors.New("Error when create new villa"), http.StatusInternalServerError
 	}
 
-	return QueryCreate, nil, nil
+	return QueryCreate, nil, nil, http.StatusCreated
 }
 
 func (v *VillaServiceImpl) UpdateDataVilla(request request.VillaRequest, id uuid.UUID) (*resources.VillaListResponse, error) {

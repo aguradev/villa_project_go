@@ -24,4 +24,5 @@ func BindingDepedencyVillaFacility(db *gorm.DB, route *echo.Group, validate *val
 	route.GET("/facility", FacilityHandler.GetAllFacilityHandler)
 	route.POST("/facility", FacilityHandler.CreateFacilityHandler)
 	route.POST("/facility/:villa_id", FacilityHandler.AddFacilityToVillaHandler)
+	route.DELETE("/facility/delete/:villa_id", FacilityHandler.RemoveFacilityToVillaHandler)
 }

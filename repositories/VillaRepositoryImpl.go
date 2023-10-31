@@ -18,6 +18,8 @@ type VillaRepository interface {
 	DeleteVilla(uuid.UUID) (bool, error)
 	UpdateVilla(request.VillaRequest, uuid.UUID) (bool, error)
 	AddFacilities(entities.Villa, []entities.Facility) (*resources.VillaListResponse, error)
+	RemoveFacilities(entities.Villa, []entities.Facility) (bool, error)
+	CheckVillaNameExists(name string) (bool, error)
 }
 
 type VillaRepositoryImpl struct {
@@ -138,4 +140,34 @@ func (v *VillaRepositoryImpl) AddFacilities(villa entities.Villa, facilities []e
 
 	return &Response, nil
 
+}
+
+func (v *VillaRepositoryImpl) CheckVillaNameExists(name string) (bool, error) {
+
+	var villa entities.Villa
+
+	CheckVillaIsExists := v.db.First(&villa, "name = ?", name)
+
+	if CheckVillaIsExists.RowsAffected > 0 {
+		return true, errors.New("Villa name already exists")
+	}
+
+	return false, nil
+
+}
+
+func (v *VillaRepositoryImpl) RemoveFacilities(villa entities.Villa, facility []entities.Facility) (bool, error) {
+
+	Transcation := v.db.Begin()
+
+	ErrAddedFacility := Transcation.Model(&villa).Association("Facility").Delete(facility)
+
+	if ErrAddedFacility != nil {
+		Transcation.Rollback()
+		return false, errors.New("Error when delete facility")
+	}
+
+	Transcation.Commit()
+
+	return true, nil
 }
