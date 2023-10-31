@@ -24,4 +24,5 @@ func BindingDepedencyVilla(db *gorm.DB, route *echo.Group, validate *validator.V
 	route.GET("/villa/:slug", VillaHandler.VillaDetailHandler)
 	route.POST("/villa", VillaHandler.CreateNewVillaHandler, middlewares.AccessbilityRole("Admin"))
 	route.DELETE("/villa/:id", VillaHandler.DeleteVillaHandler, middlewares.AccessbilityRole("Admin"))
+
 }

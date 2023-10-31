@@ -13,19 +13,23 @@ import (
 	"gorm.io/gorm"
 )
 
-func BindingDependencyReservation(db *gorm.DB, api *echo.Group, route *echo.Group, validate *validator.Validate, trans ut.Translator) {
+func BindingDependencyReservation(db *gorm.DB, api *echo.Group, validate *validator.Validate, trans ut.Translator) {
+	MidtransConfig := config.InitPaymentENV()
 
 	VillaRepo := repositories.NewVillaRepositoryImplement(db)
 	ReservationRepo := repositories.NewReservationRepositoryImpl(db)
 	CredentialRepo := repositories.NewCredentialRepository(db)
 
-	MidtransConfig := config.InitPaymentENV()
-
 	MidtransService := services.NewMidtransServiceImpl(MidtransConfig, ReservationRepo)
-	ReservationService := services.NewReservationServiceImplement(ReservationRepo, MidtransService, VillaRepo, CredentialRepo)
+	ReservationService := services.NewReservationServiceImplement(ReservationRepo, MidtransService, VillaRepo, CredentialRepo, validate, trans)
 
 	ReservationHandler := handlers.NewReservationHandler(ReservationService, MidtransService)
 
-	route.POST("/reservation", ReservationHandler.CreateReservationHandler, middlewares.AccessbilityRole("User"))
+	verifyJWT := api.Group("", middlewares.VerifiyTokenByCookie())
+	AdminAccess := verifyJWT.Group("", middlewares.AccessbilityRole("Admin"))
+	UserAccess := verifyJWT.Group("", middlewares.AccessbilityRole("User"))
+
+	AdminAccess.GET("/reservation", ReservationHandler.GetAllReservationHandler)
+	UserAccess.POST("/reservation", ReservationHandler.CreateReservationHandler)
 	api.POST("/reservation/callback", ReservationHandler.NotificationReservationHandler)
 }

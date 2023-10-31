@@ -18,7 +18,7 @@ func GenerateToken(User entities.Users, ctx echo.Context) (*resources.AuthToken,
 	Payload.Id = *User.Id
 	Payload.Username = User.Credential.Username
 	Payload.Roles = User.Credential.Roles.Role
-	Payload.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * 48))
+	Payload.ExpiresAt = jwt.NewNumericDate(time.Now().Add(time.Hour * 1))
 
 	GetToken := jwt.NewWithClaims(jwt.SigningMethodHS256, Payload)
 
@@ -31,6 +31,8 @@ func GenerateToken(User entities.Users, ctx echo.Context) (*resources.AuthToken,
 	Auth.Token = result
 	Auth.Email = User.Email
 	Auth.Fullname = User.First_name + " " + User.Last_name
+
+	SetTokenCookie(ctx, result)
 
 	return &Auth, nil
 

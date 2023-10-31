@@ -30,3 +30,21 @@ func ConvertClockTime(setTime string) *time.Time {
 	return &value
 
 }
+
+func ConvertDate(date string) (*time.Time, error) {
+	TimeParse, TimeErr := time.ParseInLocation("2006-01-02", date, time.Local)
+
+	if TimeErr != nil {
+		return nil, TimeErr
+	}
+
+	return &TimeParse, nil
+}
+
+func GetSubDate(start_date time.Time, end_date time.Time) int {
+
+	days := int(end_date.Sub(start_date).Hours() / 24)
+
+	return days
+
+}

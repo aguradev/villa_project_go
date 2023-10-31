@@ -18,12 +18,14 @@ func ApiRoutes(db *gorm.DB) {
 
 	api := e.Group("/api", middlewares.LoggerAccess())
 
-	verifyJWT := api.Group("", middlewares.LoginSignedIn())
+	verifyJWT := api.Group("", middlewares.VerifiyTokenByCookie())
 
 	modules.BindingDependencyCredentials(db, api, validate, trans)
 	modules.BindingDepedencyVilla(db, verifyJWT, validate, trans)
-	modules.BindingDependencyReservation(db, api, verifyJWT, validate, trans)
+	modules.BindingDependencyReservation(db, api, validate, trans)
 	modules.BindingDepedencyVillaLocation(db, verifyJWT, validate, trans)
+	modules.BindingDepedencyGallery(db, verifyJWT)
+	modules.BindingDepedencyVillaFacility(db, verifyJWT, validate, trans)
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
 }

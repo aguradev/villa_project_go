@@ -7,9 +7,7 @@ import (
 	"villa_go/payloads/resources"
 	"villa_go/utils"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
 
@@ -92,18 +90,13 @@ func (account *CredentialRepositoryImplement) UserLoginProfile(ctx echo.Context)
 
 	var GetUser entities.Users
 
-	PayloadUser := ctx.Get("user").(*jwt.Token)
-	Claims, ok := PayloadUser.Claims.(jwt.MapClaims)
+	GetClaimUser, ErrClaims := utils.ClaimToken(ctx)
 
-	if !ok {
-		return nil, errors.New("Token invalid")
+	if ErrClaims != nil {
+		return nil, ErrClaims
 	}
 
-	Id, IdException := uuid.FromString(Claims["id"].(string))
-
-	if IdException != nil {
-		return nil, errors.New("Invalid id")
-	}
+	Id := GetClaimUser.Id
 
 	if QueryUserException := account.Db.First(&GetUser, "id = ?", Id); QueryUserException.Error != nil {
 		return nil, errors.New("User not found")

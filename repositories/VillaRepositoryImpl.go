@@ -17,6 +17,9 @@ type VillaRepository interface {
 	CreateVilla(entities.Villa) (*resources.VillaListResponse, error)
 	DeleteVilla(uuid.UUID) (bool, error)
 	UpdateVilla(request.VillaRequest, uuid.UUID) (bool, error)
+	AddFacilities(entities.Villa, []entities.Facility) (*resources.VillaListResponse, error)
+	RemoveFacilities(entities.Villa, []entities.Facility) (bool, error)
+	CheckVillaNameExists(name string) (bool, error)
 }
 
 type VillaRepositoryImpl struct {
@@ -33,7 +36,7 @@ func (v *VillaRepositoryImpl) GetAllVilla() ([]resources.VillaListResponse, erro
 
 	var items []entities.Villa
 
-	VillaRecordException := v.db.Table("properties_villa").Joins("Location").Find(&items)
+	VillaRecordException := v.db.Table("properties_villa").Joins("Location").Preload("Facility").Find(&items)
 
 	if VillaRecordException.RowsAffected == 0 {
 		return nil, errors.New("Villa records is empty")
@@ -49,7 +52,7 @@ func (v *VillaRepositoryImpl) GetVillaBySlug(slug string) (*resources.VillaListR
 	var items entities.Villa
 	var LocationDetail resources.VillaListResponse
 
-	VillaRecordException := v.db.Table("properties_villa").Joins("Location").First(&items, "slug = ?", slug)
+	VillaRecordException := v.db.Table("properties_villa").Joins("Location").Preload("Facility").First(&items, "slug = ?", slug)
 
 	if VillaRecordException.Error == gorm.ErrRecordNotFound {
 		return nil, errors.New("Villa record not found")
@@ -109,4 +112,62 @@ func (v *VillaRepositoryImpl) CheckVillaIsExists(id uuid.UUID) (*entities.Villa,
 
 	return &items, nil
 
+}
+
+func (v *VillaRepositoryImpl) AddFacilities(villa entities.Villa, facilities []entities.Facility) (*resources.VillaListResponse, error) {
+
+	var VillaFacility entities.Villa
+	var Response resources.VillaListResponse
+
+	Transcation := v.db.Begin()
+
+	ErrAddedFacility := Transcation.Model(&villa).Association("Facility").Append(facilities)
+
+	if ErrAddedFacility != nil {
+		Transcation.Rollback()
+		return nil, errors.New("Error when add facility")
+	}
+
+	Transcation.Commit()
+
+	GetVillaByIdException := v.db.Table("properties_villa").Preload("Facility").First(&VillaFacility, "id = ?", villa.Id)
+
+	if GetVillaByIdException.Error != nil {
+		return nil, errors.New("Villa does not exist")
+	}
+
+	Response.GetVillaFacilitiesResponse(VillaFacility)
+
+	return &Response, nil
+
+}
+
+func (v *VillaRepositoryImpl) CheckVillaNameExists(name string) (bool, error) {
+
+	var villa entities.Villa
+
+	CheckVillaIsExists := v.db.First(&villa, "name = ?", name)
+
+	if CheckVillaIsExists.RowsAffected > 0 {
+		return true, errors.New("Villa name already exists")
+	}
+
+	return false, nil
+
+}
+
+func (v *VillaRepositoryImpl) RemoveFacilities(villa entities.Villa, facility []entities.Facility) (bool, error) {
+
+	Transcation := v.db.Begin()
+
+	ErrAddedFacility := Transcation.Model(&villa).Association("Facility").Delete(facility)
+
+	if ErrAddedFacility != nil {
+		Transcation.Rollback()
+		return false, errors.New("Error when delete facility")
+	}
+
+	Transcation.Commit()
+
+	return true, nil
 }

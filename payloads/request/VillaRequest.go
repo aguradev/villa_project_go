@@ -7,7 +7,7 @@ import (
 
 type VillaRequest struct {
 	Name            string          `json:"name" validate:"required"`
-	Slug            string          `json:"slug" validate:"required"`
+	Slug            string          `json:"slug"`
 	Description     string          `json:"description" validate:"required"`
 	Address         string          `json:"address" validate:"required"`
 	Max_capacity    uint            `json:"max_capacity" validate:"required"`
