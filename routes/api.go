@@ -24,6 +24,7 @@ func ApiRoutes(db *gorm.DB) {
 	modules.BindingDepedencyVilla(db, verifyJWT, validate, trans)
 	modules.BindingDependencyReservation(db, api, validate, trans)
 	modules.BindingDepedencyVillaLocation(db, verifyJWT, validate, trans)
+	modules.BindingDepedencyGallery(db, verifyJWT)
 	modules.BindingDepedencyVillaFacility(db, verifyJWT, validate, trans)
 
 	e.Logger.Fatal(e.Start(viper.GetString("server.port")))
