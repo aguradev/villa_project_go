@@ -64,14 +64,22 @@ func (v *VillaHandlerImpl) CreateNewVillaHandler(ctx echo.Context) error {
 		return exceptions.BadRequestException(ctx, BindingRequest.Error())
 	}
 
-	ResponseNewVilla, Validation, QueryException := v.VillaService.CreateNewVilla(Request)
+	ResponseNewVilla, Validation, QueryException, HttpStatus := v.VillaService.CreateNewVilla(ctx, Request)
 
 	if Validation != nil {
 		return exceptions.ValidationException(ctx, "One or more validation errors occurred", Validation)
 	}
 
 	if QueryException != nil {
-		return exceptions.AppException(ctx, QueryException.Error())
+		if HttpStatus == http.StatusInternalServerError {
+			return exceptions.AppException(ctx, QueryException.Error())
+		}
+		if HttpStatus == http.StatusConflict {
+			return exceptions.ConflictException(ctx, QueryException.Error())
+		}
+		if HttpStatus == http.StatusNoContent {
+			return exceptions.NotFoundException(ctx, QueryException.Error())
+		}
 	}
 
 	return response.HandleSuccess(ctx, ResponseNewVilla, "Villa created", http.StatusCreated)

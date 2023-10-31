@@ -18,6 +18,7 @@ type VillaRepository interface {
 	DeleteVilla(uuid.UUID) (bool, error)
 	UpdateVilla(request.VillaRequest, uuid.UUID) (bool, error)
 	AddFacilities(entities.Villa, []entities.Facility) (*resources.VillaListResponse, error)
+	CheckVillaNameExists(name string) (bool, error)
 }
 
 type VillaRepositoryImpl struct {
@@ -137,5 +138,19 @@ func (v *VillaRepositoryImpl) AddFacilities(villa entities.Villa, facilities []e
 	Response.GetVillaFacilitiesResponse(VillaFacility)
 
 	return &Response, nil
+
+}
+
+func (v *VillaRepositoryImpl) CheckVillaNameExists(name string) (bool, error) {
+
+	var villa entities.Villa
+
+	CheckVillaIsExists := v.db.First(&villa, "name = ?", name)
+
+	if CheckVillaIsExists.RowsAffected > 0 {
+		return true, errors.New("Villa name already exists")
+	}
+
+	return false, nil
 
 }
