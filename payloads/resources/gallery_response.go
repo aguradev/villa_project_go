@@ -3,8 +3,8 @@ package resources
 import "villa_go/models/entities"
 
 type GalleryResource struct {
-	Id      string `json:"id"`
-	Fileurl string `json:"image"`
+	Id      string `json:"id,omitempty"`
+	Fileurl string `json:"image,omitempty"`
 }
 
 func GetListsGalleryResponse(galleries []entities.Gallery) []GalleryResource {
