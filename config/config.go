@@ -14,7 +14,7 @@ type PaymentGatewayConfig struct {
 
 func InitEnv() {
 	viper.AddConfigPath(".")
-	viper.SetConfigFile("config.yaml")
+	viper.SetConfigFile("env.yaml")
 	viper.AutomaticEnv()
 
 	if ViperException := viper.ReadInConfig(); ViperException != nil {
