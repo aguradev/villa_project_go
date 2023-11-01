@@ -69,6 +69,7 @@ func GetListReservationResponse(reservations []entities.Reservation) []Reservati
 	for _, ResVal := range reservations {
 
 		Reservation := ReservationResource{
+			Id:               ResVal.Id.String(),
 			Transaction_date: &ResVal.Transaction_date,
 			Status:           ResVal.Status,
 			User: &UserResource{
