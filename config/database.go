@@ -11,9 +11,10 @@ import (
 
 func Database() *gorm.DB {
 
-	dsn := fmt.Sprintf("host=%v user=%v dbname=%v port=%v sslmode=disable",
+	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable",
 		viper.GetString("db.DB_HOST"),
 		viper.GetString("db.DB_USER"),
+		viper.GetString("db.DB_PASS"),
 		viper.GetString("db.DB_NAME"),
 		viper.GetString("db.DB_PORT"),
 	)
