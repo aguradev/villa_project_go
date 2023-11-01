@@ -16,7 +16,7 @@ jobs:
           echo "env: ${{ secrets.ENV_NAME }}" >> env.yaml
           echo "SECRET_KEY: ${{ secrets.SECRET_KEY }}" >> env.yaml
           echo "server.port: ${{ secrets.APP_PORT }}" >> env.yaml
-          echo "db.DB_PORT: ${{ secrets.DB_HOST }}" >> env.yaml
+          echo "db.DB_HOST: ${{ secrets.DB_HOST }}" >> env.yaml
           echo "db.DB_USER: ${{ secrets.DB_USER }}" >> env.yaml
           echo "db.DB_PASS: ${{ secrets.DB_PASS }}" >> env.yaml
           echo "db.DB_PORT: ${{ secrets.DB_PORT }}" >> env.yaml
