@@ -33,7 +33,7 @@ jobs:
 
           docker build -t ${{ secrets.DOCKER_USERNAME }}/mini-project:latest .
           docker create -ti --name dummy ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
-          docker cp dummy:/root/env.yaml
+          docker cp dummy:/root/env.yaml .
           docker rm -f dummy
 
       - uses: docker/login-action@v3
