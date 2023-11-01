@@ -10,5 +10,5 @@ FROM alpine:3.18
 WORKDIR /root/
 COPY --from=dev /app/villa-go .
 COPY env.yaml /root/env.yaml
-EXPOSE 8713
+EXPOSE 8080
 CMD ["./villa-go"]
