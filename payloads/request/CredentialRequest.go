@@ -15,7 +15,7 @@ type CredentialRequest struct {
 
 type RegisterRequest struct {
 	Username   string `json:"username" validate:"required"`
-	Password   string `json:"password" validate:"required"`
+	Password   string `json:"password" validate:"required,min=5"`
 	First_name string `json:"first_name" validate:"required"`
 	Last_name  string `json:"last_name" validate:"required"`
 	Email      string `json:"email" validate:"required"`
