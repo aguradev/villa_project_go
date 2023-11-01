@@ -9,10 +9,12 @@ import (
 	"villa_go/services"
 
 	"github.com/labstack/echo/v4"
+	uuid "github.com/satori/go.uuid"
 )
 
 type ReservationHandler interface {
 	GetAllReservationHandler(echo.Context) error
+	GetReservationByIdHandler(echo.Context) error
 	CreateReservationHandler(echo.Context) error
 	NotificationReservationHandler(echo.Context) error
 }
@@ -85,4 +87,24 @@ func (r *ReservationHandlerImpl) NotificationReservationHandler(ctx echo.Context
 	fmt.Println("Notification :", NotificationMessage)
 
 	return ctx.String(http.StatusCreated, NotificationMessage)
+}
+
+func (r *ReservationHandlerImpl) GetReservationByIdHandler(ctx echo.Context) error {
+
+	GetId := ctx.Param("villa_id")
+
+	ParseToUUID, errPasing := uuid.FromString(GetId)
+
+	if errPasing != nil {
+		return exceptions.BadRequestException(ctx, "Invalid format uuid")
+	}
+
+	Results, ErrMessage := r.ReservationService.GetReservationById(ParseToUUID)
+
+	if ErrMessage != nil {
+		return exceptions.AppException(ctx, ErrMessage.Error())
+	}
+
+	return response.HandleSuccess(ctx, Results, "Success Get Reservation Detail", http.StatusOK)
+
 }

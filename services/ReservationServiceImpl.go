@@ -18,6 +18,7 @@ import (
 type ReservationService interface {
 	GetListReservation() ([]resources.ReservationResource, error)
 	CreateNewReservation(echo.Context, request.ReservationRequest) (*resources.ReservationResource, []exceptions.ValidationMessage, error)
+	GetReservationById(uuid.UUID) (*resources.ReservationResource, error)
 }
 
 type ReservationServiceImpl struct {
@@ -38,6 +39,18 @@ func NewReservationServiceImplement(reservation repositories.ReservationReposito
 		Validate:        validate,
 		Trans:           trans,
 	}
+}
+
+func (r *ReservationServiceImpl) GetReservationById(id uuid.UUID) (*resources.ReservationResource, error) {
+
+	GetReservationDetail, ErrMessage := r.ReservationRepo.GetReservationById(id)
+
+	if ErrMessage != nil {
+		return nil, ErrMessage
+	}
+
+	return GetReservationDetail, nil
+
 }
 
 func (r *ReservationServiceImpl) GetListReservation() ([]resources.ReservationResource, error) {

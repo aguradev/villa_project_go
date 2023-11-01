@@ -16,7 +16,7 @@ import (
 )
 
 type CredentialService interface {
-	RegisterCredential(request.RegisterRequest) (*resources.RegisterResponse, error)
+	RegisterCredential(echo.Context, request.RegisterRequest) (*resources.RegisterResponse, []exceptions.ValidationMessage, error, bool)
 	AuthUser(echo.Context, request.AuthRequest) (*resources.AuthToken, []exceptions.ValidationMessage, error)
 }
 
@@ -34,8 +34,14 @@ func CreateCredentialServiceImplement(Credential repositories.CredentialReposito
 	}
 }
 
-func (Credential *CredentialServiceImpl) RegisterCredential(register request.RegisterRequest) (*resources.RegisterResponse, error) {
+func (Credential *CredentialServiceImpl) RegisterCredential(ctx echo.Context, register request.RegisterRequest) (*resources.RegisterResponse, []exceptions.ValidationMessage, error, bool) {
 	User := &entities.Users{}
+
+	ValidationMessage := Credential.Validator.Struct(register)
+
+	if ValidationMessage != nil {
+		return nil, utils.ValidationError(ctx, Credential.TranslatorValidation, ValidationMessage), nil, false
+	}
 
 	CredentialRequest := request.CredentialRequest{
 		Username: register.Username,
@@ -45,13 +51,13 @@ func (Credential *CredentialServiceImpl) RegisterCredential(register request.Reg
 	GetRoles, RoleExists := Credential.CredentialRepository.GetRoleUserForRegister("User")
 
 	if RoleExists != nil {
-		return nil, errors.New("Role not found")
+		return nil, nil, errors.New("Role not found"), false
 	}
 
 	CredentialRequest.Roles_id = uuid.UUID(GetRoles.Id)
 
 	if ExceptionPass != nil {
-		return nil, ExceptionPass
+		return nil, nil, ExceptionPass, false
 	}
 
 	CredentialRequest.Password = PasswordHash
@@ -63,15 +69,21 @@ func (Credential *CredentialServiceImpl) RegisterCredential(register request.Reg
 		Address:    register.Address,
 	}
 
+	EmailExists, ErrMessage := Credential.CredentialRepository.CheckEmailExists(UserRequest.Email)
+
+	if EmailExists {
+		return nil, nil, ErrMessage, EmailExists
+	}
+
 	User.RegisterUser(UserRequest, CredentialRequest)
 
 	UserRegister, Err := Credential.CredentialRepository.RegisterUserCredential(*User)
 
 	if Err != nil {
-		return nil, Err
+		return nil, nil, Err, false
 	}
 
-	return UserRegister, nil
+	return UserRegister, nil, nil, false
 
 }
 

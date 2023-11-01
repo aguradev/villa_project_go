@@ -1,0 +1,24 @@
+appName: 
+env: 
+SECRET_KEY: 
+ADMIN_SECRET_KEY: 
+server:
+  port: ":8713"
+db:
+  DB_HOST: 
+  DB_USER:  
+  DB_PASS:
+  DB_PORT:  
+  DB_NAME:  
+payment:
+  SERVER_KEY: 
+storage:
+  BUCKET_NAME : 
+  ACCOUNT_ID: 
+  ACCESS_KEY_ID : 
+  SECRET_ACCESS_KEY : 
+email:
+  HOST: 
+  PORT: 
+  USER:
+  PASS:

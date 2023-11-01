@@ -3,4 +3,6 @@ dev-serve:
 dev:
 	@go run main.go
 build:
-	@go build -o main
+	@go build -o villa-go .
+tidy:
+	@go mod tidy
