@@ -57,4 +57,4 @@ jobs:
             docker rm mini-project-app || true
             docker pull ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
 
-            docker run -d --name mini-project-app ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
+            docker run -d -p 8080:8080 --name mini-project-app ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
