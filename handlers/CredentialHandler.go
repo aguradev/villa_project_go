@@ -33,10 +33,14 @@ func (Crendetial *CredentialControllerImpl) RegisterUser(ctx echo.Context) error
 		return echo.NewHTTPError(http.StatusBadRequest, CredentialbindingException.Error())
 	}
 
-	RegisterUser, ValidationMessage, Err := Crendetial.CredentialService.RegisterCredential(ctx, CredentialRequest)
+	RegisterUser, ValidationMessage, Err, EmailExists := Crendetial.CredentialService.RegisterCredential(ctx, CredentialRequest)
 
 	if ValidationMessage != nil {
 		return exceptions.ValidationException(ctx, "One or more validation errors occurred", ValidationMessage)
+	}
+
+	if EmailExists {
+		return exceptions.ConflictException(ctx, Err.Error())
 	}
 
 	if Err != nil {

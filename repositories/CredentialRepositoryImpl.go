@@ -13,6 +13,7 @@ import (
 
 type CredentialRepository interface {
 	GetRoleUserForRegister(role string) (entities.Roles, error)
+	CheckEmailExists(email string) (bool, error)
 	CheckAuthCredential(request.AuthRequest) (*entities.Users, bool, error)
 	RegisterUserCredential(entities.Users) (*resources.RegisterResponse, error)
 	UserLoginProfile(echo.Context) (*entities.Users, error)
@@ -103,5 +104,19 @@ func (account *CredentialRepositoryImplement) UserLoginProfile(ctx echo.Context)
 	}
 
 	return &GetUser, nil
+
+}
+
+func (account *CredentialRepositoryImplement) CheckEmailExists(email string) (bool, error) {
+
+	var User entities.Users
+
+	EmailExistsErr := account.Db.First(&User, "email = ?", email)
+
+	if EmailExistsErr.RowsAffected > 0 {
+		return true, errors.New("Email already exists")
+	}
+
+	return false, nil
 
 }
