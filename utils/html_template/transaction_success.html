@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        ul li {
+            font-size: 16px;
+        }
+
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <body>
+        <div class="container">
+            <h2><strong>Transaksi Reservasi Villa Anda</strong></h2>
+
+            <p>Kepada {{ .Name_customer }},</p>
+
+            <p>Kami dengan senang hati ingin mengucapkan terima kasih atas pemesanan Villa di {{ .Villa_name }}!
+                Reservasi
+                Anda
+                telah
+                berhasil diproses dan berikut adalah detailnya:</p>
+
+            <ul>
+                <li>Tanggal Check-in: {{ .Check_in_date }}</li>
+                <li>Tanggal Check-out: {{ .Check_out_date }}</li>
+                <li>Nama Villa: {{ .Villa_name }}</li>
+                <li>Jumlah Tamu: {{ .Guest_count }}</li>
+                <li>Total Biaya: {{ .Total }}</li>
+            </ul>
+
+
+            <p>Apabila Anda memiliki pertanyaan atau perlu bantuan tambahan, jangan ragu untuk menghubungi tim layanan
+                pelanggan kami melalui email ini atau nomor telepon kami yang tertera di bawah.Kami sangat menantikan
+                kedatangan Anda di Villa kami dan berharap Anda memiliki pengalaman menginap yang tak terlupakan. Kami
+                akan
+                menjaga Villa dalam kondisi terbaik untuk Anda.</p>
+
+            <p>Terima kasih atas kepercayaan Anda kepada {{ .Villa_name }}! Kami berharap Anda menikmati masa menginap
+                Anda
+                di
+                sini.
+            </p>
+
+            <p>Hormat kami,<br>
+                Mr. Agung<br>
+                Villa Go<br>
+                Villa-go@gmail.com</p>
+        </div>
+
+        <div class="footer">
+            &copy; 2023 Villa Go
+        </div>
+    </body>
+</body>
+
+</html>
