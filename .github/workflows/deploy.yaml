@@ -1,7 +1,7 @@
 name: Deployment
 
 on:
-  pull_request:
+  push:
     branches:
       - "master"
 
@@ -44,3 +44,17 @@ jobs:
 
       - name: docker push
         run: docker push ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
+
+      - name: connect ssh
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.EXTERNAL_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.PORT_FIREWALL }}
+          script: |
+            docker stop mini-project-app || true
+            docker rm mini-project-app || true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
+
+            docker run -d --name mini-project-app ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
