@@ -13,6 +13,7 @@ type Villa struct {
 	Location_id     *uuid.UUID      `gorm:"type:uuid;"`
 	Location        *VillaLocation  `gorm:"foreignKey:Location_id;references:Id;"`
 	Facility        []Facility      `gorm:"many2many:villa_has_facility;"`
+	Gallery         []Gallery       `gorm:"foreignKey:Villa_id;references:Id;"`
 	Name            string          `gorm:"type:varchar(50);unique"`
 	Slug            string          `gorm:"type:varchar(50)"`
 	Description     string          `gorm:"type:text"`

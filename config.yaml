@@ -12,3 +12,14 @@ db:
   DB_NAME:  "villa_db"
 payment:
   SERVER_KEY: "SB-Mid-server-3z6SLqLI6vuJALQUVR7M7B_d"
+storage:
+  BUCKET_NAME : "mini-project-villa-go"
+  ACCOUNT_ID: "af0c3134cc6485ec19d99ba84077c237"
+  ACCESS_KEY_ID : "91a1c9dcb07c988b165f6d2aa0860648"
+  SECRET_ACCESS_KEY : "2206e97a4286f5afd66f941217d021d7983e3e0e951004a5aab151c1accf6e76"
+email:
+  HOST: "smtp.gmail.com"
+  PORT: 587
+  USER: "wahmayun.wm@gmail.com"
+  PASS: "eafhcdzvyhgqgoaw"
+

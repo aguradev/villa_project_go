@@ -11,3 +11,12 @@ type ReservationRequest struct {
 type ReservationDetailRequest struct {
 	SnapURL string `json:"snap_url,omitempty"`
 }
+
+type ReservationEmailRequest struct {
+	Name_customer  string
+	Villa_name     string
+	Check_in_date  string
+	Check_out_date string
+	Guest_count    uint
+	Total          int
+}
