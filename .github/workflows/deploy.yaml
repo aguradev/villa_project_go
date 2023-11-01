@@ -1,0 +1,46 @@
+name: Deployment
+
+on:
+  pull_request:
+    branches:
+      - "master"
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup enviroment & docker build
+        run: |
+          echo "APP_NAME: ${{ secrets.APP_NAME }}" > env.yaml
+          echo "env: ${{ secrets.ENV_NAME }}" >> env.yaml
+          echo "SECRET_KEY: ${{ secrets.SECRET_KEY }}" >> env.yaml
+          echo "server.port: ${{ secrets.APP_PORT }}" >> env.yaml
+          echo "db.DB_PORT: ${{ secrets.DB_HOST }}" >> env.yaml
+          echo "db.DB_USER: ${{ secrets.DB_USER }}" >> env.yaml
+          echo "db.DB_PASS: ${{ secrets.DB_PASS }}" >> env.yaml
+          echo "db.DB_PORT: ${{ secrets.DB_PORT }}" >> env.yaml
+          echo "db.DB_NAME: ${{ secrets.DB_NAME }}" >> env.yaml
+          echo "payment.SERVER_KEY: ${{ secrets.MIDTRANS_SERVER_KEY }}" >> env.yaml
+          echo "storage.BUCKET_NAME: ${{ secrets.BUCKET_NAME }}" >> env.yaml
+          echo "storage.ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}" >> env.yaml
+          echo "storage.ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}" >> env.yaml
+          echo "storage.SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}" >> env.yaml
+          echo "email.HOST: ${{ secrets.EMAIL_HOST }}" >> env.yaml
+          echo "email.PORT: ${{ secrets.EMAIL_PORT }}" >> env.yaml
+          echo "email.USER: ${{ secrets.EMAIL_USER }}" >> env.yaml
+          echo "email.PASS: ${{ secrets.EMAIL_PASS }}" >> env.yaml
+
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/mini-project:latest .
+          docker create -ti --name dummy ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
+          docker cp dummy:/root/env.yaml
+          docker rm -f dummy
+
+      - uses: docker/login-action@v3
+        name: docker login
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: docker push
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/mini-project:latest
