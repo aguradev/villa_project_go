@@ -122,12 +122,24 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 						return false, "", ErrMessage
 					}
 
+					ErrSendingEmail := utils.SendingEmail(GetReservationData.User.Email, "Notification Payment", RequestTransactionEmail)
+
+					if ErrSendingEmail != nil {
+						return false, ErrSendingEmail.Error(), nil
+					}
+
 					return true, TransactionStatusReps.StatusMessage, nil
 				} else if TransactionStatusReps.FraudStatus == "accept" {
 					StatusUpdated, ErrMessage := p.ReservationRepo.UpdateStatusReservation(SetToUuid, TransactionStatus)
 
 					if !StatusUpdated {
 						return false, "", ErrMessage
+					}
+
+					ErrSendingEmail := utils.SendingEmail(GetReservationData.User.Email, "Notification Payment", RequestTransactionEmail)
+
+					if ErrSendingEmail != nil {
+						return false, ErrSendingEmail.Error(), nil
 					}
 
 					return true, TransactionStatusReps.StatusMessage, nil
@@ -140,7 +152,7 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 					return false, "", ErrMessage
 				}
 
-				ErrSendingEmail := utils.SendingEmail(GetReservationData.User.Email, "Notification Payment Settlement", RequestTransactionEmail)
+				ErrSendingEmail := utils.SendingEmail(GetReservationData.User.Email, "Notification Payment", RequestTransactionEmail)
 
 				if ErrSendingEmail != nil {
 					return false, ErrSendingEmail.Error(), nil
