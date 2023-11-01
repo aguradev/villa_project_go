@@ -30,6 +30,7 @@ func BindingDependencyReservation(db *gorm.DB, api *echo.Group, validate *valida
 	UserAccess := verifyJWT.Group("", middlewares.AccessbilityRole("User"))
 
 	AdminAccess.GET("/reservation", ReservationHandler.GetAllReservationHandler)
+	AdminAccess.GET("/reservation/:villa_id", ReservationHandler.GetReservationByIdHandler)
 	UserAccess.POST("/reservation", ReservationHandler.CreateReservationHandler)
 	api.POST("/reservation/callback", ReservationHandler.NotificationReservationHandler)
 }
