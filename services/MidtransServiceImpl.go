@@ -2,9 +2,12 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"villa_go/config"
 	"villa_go/models/entities"
+	"villa_go/payloads/request"
 	"villa_go/repositories"
+	"villa_go/utils"
 
 	"github.com/labstack/echo/v4"
 	"github.com/midtrans/midtrans-go"
@@ -41,7 +44,6 @@ func NewMidtransServiceImpl(midtransConfig *config.PaymentGatewayConfig, reserva
 }
 
 func (p *MidtransServiceImpl) GenerateSnapURL(ctx echo.Context, villa entities.Villa, User entities.Users, reservation entities.Reservation) (*snap.Response, error) {
-
 	req := &snap.Request{
 		TransactionDetails: midtrans.TransactionDetails{
 			OrderID:  reservation.Id.String(),
@@ -89,6 +91,11 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 	}
 
 	TransactionStatusReps, TransactionExp := p.ClientOpenCore.CheckTransaction(orderId)
+	GetReservationData, ErrGetReservation := p.ReservationRepo.GetReservationById(SetToUuid)
+
+	if ErrGetReservation != nil {
+		return false, "", errors.New("failed to find reservation")
+	}
 
 	if TransactionExp != nil {
 		return false, "", errors.New("Transaction not found")
@@ -96,6 +103,16 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 		if TransactionStatusReps != nil {
 
 			TransactionStatus := TransactionStatusReps.TransactionStatus
+			RequestTransactionEmail := request.ReservationEmailRequest{
+				Name_customer:  GetReservationData.User.First_name + " " + GetReservationData.User.Last_name,
+				Villa_name:     GetReservationData.Reservation_detail.Villa.Name,
+				Check_in_date:  GetReservationData.Reservation_detail.Check_in_date.String(),
+				Check_out_date: GetReservationData.Reservation_detail.Check_out_date.String(),
+				Guest_count:    uint(GetReservationData.Reservation_detail.Guest_count),
+				Total:          GetReservationData.Reservation_detail.Total,
+			}
+
+			fmt.Println(RequestTransactionEmail)
 
 			if TransactionStatus == "capture" {
 				if TransactionStatusReps.FraudStatus == "challange" {
@@ -103,6 +120,12 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 
 					if !StatusUpdated {
 						return false, "", ErrMessage
+					}
+
+					ErrSendingEmail := utils.SendingEmail(GetReservationData.User.Email, "Notification Payment", RequestTransactionEmail)
+
+					if ErrSendingEmail != nil {
+						return false, ErrSendingEmail.Error(), nil
 					}
 
 					return true, TransactionStatusReps.StatusMessage, nil
@@ -113,6 +136,12 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 						return false, "", ErrMessage
 					}
 
+					ErrSendingEmail := utils.SendingEmail(GetReservationData.User.Email, "Notification Payment", RequestTransactionEmail)
+
+					if ErrSendingEmail != nil {
+						return false, ErrSendingEmail.Error(), nil
+					}
+
 					return true, TransactionStatusReps.StatusMessage, nil
 				}
 			} else if TransactionStatus == "settlement" {
@@ -121,6 +150,12 @@ func (p *MidtransServiceImpl) NotificationPayment(transaction map[string]interfa
 
 				if !StatusUpdated {
 					return false, "", ErrMessage
+				}
+
+				ErrSendingEmail := utils.SendingEmail(GetReservationData.User.Email, "Notification Payment", RequestTransactionEmail)
+
+				if ErrSendingEmail != nil {
+					return false, ErrSendingEmail.Error(), nil
 				}
 
 				return true, "Reservation transaction settlement", nil
