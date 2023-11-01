@@ -9,6 +9,6 @@ RUN go build -o villa-go .
 FROM alpine:3.18
 WORKDIR /root/
 COPY --from=dev /app/villa-go .
-COPY config.yaml /root/config.yaml
+COPY env.yaml /root/env.yaml
 EXPOSE 8713
 CMD ["./villa-go"]
