@@ -16,6 +16,7 @@ type ReservationRepository interface {
 	GetReservationById(uuid.UUID) (*resources.ReservationResource, error)
 	UpdateSnapUrlReservation(uuid.UUID, request.ReservationRequest) (*resources.ReservationResource, error)
 	UpdateStatusReservation(uuid.UUID, string) (bool, error)
+	GetListReservationByUser(uuid.UUID) ([]resources.ReservationResource, error)
 }
 
 type ReservationRepositoryImpl struct {
@@ -26,6 +27,26 @@ func NewReservationRepositoryImpl(Db *gorm.DB) ReservationRepository {
 	return &ReservationRepositoryImpl{
 		db: Db,
 	}
+}
+
+func (r *ReservationRepositoryImpl) GetListReservationByUser(id uuid.UUID) ([]resources.ReservationResource, error) {
+
+	var Reservation []entities.Reservation
+
+	GetReservationErr := r.db.Preload("User").Preload("Reservation_detail.Villa").Find(&Reservation, "user_id = ?", id)
+
+	if GetReservationErr.RowsAffected == 0 {
+		return nil, errors.New("Reservation record empty")
+	}
+
+	if GetReservationErr.Error != nil {
+		return nil, GetReservationErr.Error
+	}
+
+	ReservationResponse := resources.GetListReservationResponse(Reservation)
+
+	return ReservationResponse, nil
+
 }
 
 func (r *ReservationRepositoryImpl) GetListReservation() ([]resources.ReservationResource, error) {
