@@ -17,7 +17,7 @@ type ReservationHandler interface {
 	GetReservationByIdHandler(echo.Context) error
 	CreateReservationHandler(echo.Context) error
 	NotificationReservationHandler(echo.Context) error
-	GetReservationDataByUserLogin(echo.Context) error
+	GetReservationDataByUserLoginHandler(echo.Context) error
 }
 
 type ReservationHandlerImpl struct {
@@ -110,7 +110,7 @@ func (r *ReservationHandlerImpl) GetReservationByIdHandler(ctx echo.Context) err
 
 }
 
-func (r *ReservationHandlerImpl) GetReservationDataByUserLogin(ctx echo.Context) error {
+func (r *ReservationHandlerImpl) GetReservationDataByUserLoginHandler(ctx echo.Context) error {
 
 	ReservationResponse, httpStatus, Err := r.ReservationService.GetReservationListUser(ctx)
 
