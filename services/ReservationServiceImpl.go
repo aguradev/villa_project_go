@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"net/http"
 	"villa_go/exceptions"
 	"villa_go/models/entities"
 	"villa_go/payloads/request"
@@ -19,6 +20,7 @@ type ReservationService interface {
 	GetListReservation() ([]resources.ReservationResource, error)
 	CreateNewReservation(echo.Context, request.ReservationRequest) (*resources.ReservationResource, []exceptions.ValidationMessage, error)
 	GetReservationById(uuid.UUID) (*resources.ReservationResource, error)
+	GetReservationListUser(ctx echo.Context) ([]resources.ReservationResource, int, error)
 }
 
 type ReservationServiceImpl struct {
@@ -39,6 +41,24 @@ func NewReservationServiceImplement(reservation repositories.ReservationReposito
 		Validate:        validate,
 		Trans:           trans,
 	}
+}
+
+func (r *ReservationServiceImpl) GetReservationListUser(ctx echo.Context) ([]resources.ReservationResource, int, error) {
+
+	GetUserAccess, ErrAccess := r.CredentialRepo.UserLoginProfile(ctx)
+
+	if ErrAccess != nil {
+		return nil, http.StatusNoContent, ErrAccess
+	}
+
+	ReservationResponse, ErrResponse := r.ReservationRepo.GetListReservationByUser(*GetUserAccess.Id)
+
+	if ErrResponse != nil {
+		return nil, http.StatusNotFound, ErrResponse
+	}
+
+	return ReservationResponse, http.StatusOK, nil
+
 }
 
 func (r *ReservationServiceImpl) GetReservationById(id uuid.UUID) (*resources.ReservationResource, error) {

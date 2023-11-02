@@ -17,6 +17,7 @@ type ReservationHandler interface {
 	GetReservationByIdHandler(echo.Context) error
 	CreateReservationHandler(echo.Context) error
 	NotificationReservationHandler(echo.Context) error
+	GetReservationDataByUserLoginHandler(echo.Context) error
 }
 
 type ReservationHandlerImpl struct {
@@ -60,7 +61,7 @@ func (r *ReservationHandlerImpl) CreateReservationHandler(ctx echo.Context) erro
 	}
 
 	if ReservationException != nil {
-		return exceptions.BadRequestException(ctx, ReservationException.Error())
+		return exceptions.NotFoundException(ctx, ReservationException.Error())
 	}
 
 	return response.HandleSuccess(ctx, ReservationResponse, "Reservation Created, Finish Your Payment Transaction", http.StatusCreated)
@@ -106,5 +107,22 @@ func (r *ReservationHandlerImpl) GetReservationByIdHandler(ctx echo.Context) err
 	}
 
 	return response.HandleSuccess(ctx, Results, "Success Get Reservation Detail", http.StatusOK)
+
+}
+
+func (r *ReservationHandlerImpl) GetReservationDataByUserLoginHandler(ctx echo.Context) error {
+
+	ReservationResponse, httpStatus, Err := r.ReservationService.GetReservationListUser(ctx)
+
+	if Err != nil {
+		if httpStatus == http.StatusNotFound {
+			return exceptions.NotFoundException(ctx, Err.Error())
+		}
+		if httpStatus == http.StatusNoContent {
+			return exceptions.NotFoundException(ctx, Err.Error())
+		}
+	}
+
+	return response.HandleSuccess(ctx, ReservationResponse, "Success get reservation data user", httpStatus)
 
 }
