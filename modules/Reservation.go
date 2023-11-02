@@ -32,5 +32,6 @@ func BindingDependencyReservation(db *gorm.DB, api *echo.Group, validate *valida
 	AdminAccess.GET("/reservation", ReservationHandler.GetAllReservationHandler)
 	AdminAccess.GET("/reservation/:villa_id", ReservationHandler.GetReservationByIdHandler)
 	UserAccess.POST("/reservation", ReservationHandler.CreateReservationHandler)
+	UserAccess.GET("/reservation/user", ReservationHandler.GetReservationDataByUserLogin)
 	api.POST("/reservation/callback", ReservationHandler.NotificationReservationHandler)
 }
